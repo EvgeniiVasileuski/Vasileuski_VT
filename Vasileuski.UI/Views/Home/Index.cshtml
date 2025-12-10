@@ -104,60 +104,66 @@ btn btn-link text-dark">
 
                     <div class="col-md-6">
                         <!-- Форма -->
-                        <section>
-                            <h3 class="mb-3">Форма</h3>
-                            <form method="get" action="#" class="needs-validation" novalidate>
-                                <div class="mb-4">
-                                    <h5>Item 1</h5>
-
-                                    <!-- Чекбоксы -->
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" name="checkbox1" id="checkbox1">
-                                        <label class="form-check-label" for="checkbox1">Чек-бокс 1</label>
+                    <section>
+                        <h3 class="mb-3">Форма</h3>
+                        <!-- Форма с методом POST, action указывает на текущую страницу (можно оставить #) -->
+                        <form method="post" action="https://jsonplaceholder.typicode.com/posts" class="needs-validation" novalidate>
+                            <div class="mb-4">
+                                <div class="row mb-3">
+                                    
+                                    <div class="col-sm-9">
+                                        <select class="form-select" id="item1" name="item1">
+                                            <option selected value="item1">Item 1</option>
+                                            <option value="item2">Item 2</option>
+                                            <option value="item3">Item 3</option>
+                                        </select>
                                     </div>
-                                    <div class="form-check mb-3">
-                                        <input class="form-check-input" type="checkbox" name="checkbox2" id="checkbox2">
-                                        <label class="form-check-label" for="checkbox2">Чек-бокс 2</label>
-                                    </div>
-
-                                    <!-- Радио-кнопки -->
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="radio1" checked>
-                                        <label class="form-check-label" for="radio1">Радио-1</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="radio2">
-                                        <label class="form-check-label" for="radio2">Радио-2</label>
-                                    </div>
-                                    <div class="form-check mb-4">
-                                        <input class="form-check-input" type="radio" name="radioGroup" id="radio3" value="radio3">
-                                        <label class="form-check-label" for="radio3">Радио-3</label>
-                                    </div>
-
-                                    <!-- Поля ввода -->
-                                    <div class="row mb-3">
-                                        <div class="col-sm-3">
-                                            <label for="login" class="col-form-label">Логин:</label>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <input type="email" class="form-control" id="login" name="login" value="vasileuski@mail.ru" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-4">
-                                        <div class="col-sm-3">
-                                            <label for="password" class="col-form-label">Пароль:</label>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <input type="password" class="form-control" id="password" name="password" placeholder="......" required>
-                                        </div>
-                                    </div>
-
-                                    <!-- Кнопка отправки -->
-                                    <button type="submit" class="btn btn-primary">Отправить</button>
                                 </div>
-                            </form>
-                        </section>
+
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="chk1" id="chk1" value="on">
+                                    <label class="form-check-label" for="chk1">Чек-бокс 1</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" name="chk2" id="chk2" value="on">
+                                    <label class="form-check-label" for="chk2">Чек-бокс 2</label>
+                                </div>
+
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="radio" id="radio1" value="1">
+                                    <label class="form-check-label" for="radio1">Радио-1</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="radio" id="radio2" value="2" checked>
+                                    <label class="form-check-label" for="radio2">Радио-2</label>
+                                </div>
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="radio" name="radio" id="radio3" value="3">
+                                    <label class="form-check-label" for="radio3">Радио-3</label>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-sm-3">
+                                        <label for="login" class="col-form-label">Логин:</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <input type="email" class="form-control" id="login" name="login" value="user1@mail.ru" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-sm-3">
+                                        <label for="pass" class="col-form-label">Пароль:</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="pass" name="pass" placeholder="......" required>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Отправить</button>
+                            </div>
+                        </form>
+                    </section>
                     </div>
                 </div>
             </div>
@@ -291,5 +297,6 @@ btn btn-link text-dark">
             }
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 
