@@ -1,8 +1,156 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Главная страница - Hello World!</title>
+
+    <!-- Подключение CSS файлов -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        /* Дополнительные стили для этой страницы */
+        .hello-world {
+            color: #007bff;
+            font-size: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .icon-demo {
+            font-size: 2rem;
+            margin: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <!-- Панель навигации -->
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+                <!-- меню сайта -->
+                <a class="navbar-brand" href="#">VasileuskiLabsV03</a>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" href="#">Лб 1</a>
+                    <a class="nav-item nav-link" href="#">Каталог</a>
+                    <a class="nav-item nav-link" href="#">Администрирование</a>
+                </div>
+                <!-- меню сайта - конец -->
+                <!-- Информация пользователя -->
+
+                <div class="dropdown ms-auto nav-color">
+                    <button class="btn btn-secondary dropdown-toggle"
+                            type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        vasileuski@gmail.com
+                        <img src="Images/7.jpg" width="30"
+                             alt="User" class="rounded nav-color" />
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <span class="dropdown-item-text">
+                                <img src="Images/7.jpg"
+                                     width="50" alt="User" class="rounded" />
+                                vasileuski@gmail.com
+                            </span>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form id="logoutForm" class="form-inline" action="#">
+                                <button id="logout" type="submit" class="nav-link
+btn btn-link text-dark">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Информация пользователя - конец -->
+            </nav> <!-- Панель навигации - конец -->
+           
+        </div><!-- container - конец -->
+    </header><!-- header - конец -->
+    <main class="container">
+        Содержимое страницы
+    </main>
+    <footer>
+        <div class="container">
+            <div class="navbar navbar-dark navbar-expand-md bg-dark">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-item nav-link text-white" href="http://www.facebook.com">
+                        <i class="fab fa-facebook-f fa-2x"></i>
+                    </a>
+                    <a class="nav-item nav-link text-white" href="http://www.vk.com">
+                        <i class="fab fa-vk fa-2x"></i>
+                    </a>
+                    <a class="nav-item nav-link text-white" href="http://www.twitter.com">
+                        <i class="fab fa-twitter fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Проверка загрузки Font Awesome
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM загружен');
+
+            // Проверяем, загрузился ли Font Awesome
+            const faStyles = Array.from(document.styleSheets).find(sheet =>
+                sheet.href && sheet.href.includes('font-awesome')
+            );
+
+            if (faStyles) {
+                console.log('✅ Font Awesome CSS загружен:', faStyles.href);
+
+                // Проверяем наличие шрифтов
+                const testIcon = document.createElement('i');
+                testIcon.className = 'fas fa-test';
+                document.body.appendChild(testIcon);
+
+                const computedStyle = window.getComputedStyle(testIcon);
+                const fontFamily = computedStyle.fontFamily;
+
+                if (fontFamily.includes('Font Awesome')) {
+                    console.log('✅ Шрифты Font Awesome загружены');
+                } else {
+                    console.log('❌ Шрифты Font Awesome НЕ загружены');
+                    console.log('Текущий шрифт:', fontFamily);
+                }
+
+                document.body.removeChild(testIcon);
+            } else {
+                console.log('❌ Font Awesome CSS НЕ загружен');
+
+                // Показываем альтернативный текст
+                document.querySelectorAll('.fa-brands, .fab').forEach(icon => {
+                    const parent = icon.parentElement;
+                    const altText = document.createElement('span');
+                    altText.className = 'badge bg-secondary';
+
+                    if (icon.classList.contains('fa-facebook-f')) {
+                        altText.textContent = 'FB';
+                        altText.style.backgroundColor = '#1877F2';
+                    } else if (icon.classList.contains('fa-vk')) {
+                        altText.textContent = 'VK';
+                        altText.style.backgroundColor = '#0077FF';
+                    } else if (icon.classList.contains('fa-twitter')) {
+                        altText.textContent = 'TW';
+                        altText.style.backgroundColor = '#1DA1F2';
+                    }
+
+                    parent.replaceChild(altText, icon);
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
