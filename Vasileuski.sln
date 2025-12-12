@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35919.96 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vasileuski.UI", "Vasileuski.UI\Vasileuski.UI.csproj", "{E26FFBCC-653C-43DC-802A-2D14CCA9B8E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vasileuski.Domain", "Vasileuski.Domain\Vasileuski.Domain.csproj", "{19986CD6-F997-4994-B55F-532DFE1D06A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{E26FFBCC-653C-43DC-802A-2D14CCA9B8E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E26FFBCC-653C-43DC-802A-2D14CCA9B8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E26FFBCC-653C-43DC-802A-2D14CCA9B8E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19986CD6-F997-4994-B55F-532DFE1D06A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19986CD6-F997-4994-B55F-532DFE1D06A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19986CD6-F997-4994-B55F-532DFE1D06A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19986CD6-F997-4994-B55F-532DFE1D06A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
