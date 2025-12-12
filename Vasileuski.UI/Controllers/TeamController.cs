@@ -7,46 +7,51 @@ namespace Vasileuski.UI.Controllers
 {
     public class TeamController : Controller
     {
-        private readonly ITeamService _teamService;
-        private readonly ICategoryService _categoryService;
+        
+            private readonly ITeamService _teamService;
+            private readonly ICategoryService _categoryService;
 
-        public TeamController(ITeamService teamService, ICategoryService categoryService)
-        {
-            _teamService = teamService;
-            _categoryService = categoryService;
-        }
+            public TeamController(ITeamService teamService, ICategoryService categoryService)
+            {
+                _teamService = teamService;
+                _categoryService = categoryService;
+            }
 
-        /// <summary>
-        /// Главная страница со списком всех команд
-        /// </summary>
         public async Task<IActionResult> Index(string? category)
         {
-            // Получаем команды через сервис
-            var teamsResponse = await _teamService.GetTeamListAsync(category);
+            var teamResponse = await _teamService.GetTeamListAsync(category);
 
-            if (!teamsResponse.Success)
-                return NotFound(teamsResponse.ErrorMessage);
+            if (!teamResponse.Success)
+                return NotFound(teamResponse.ErrorMessage);
 
-            // Получаем категории для фильтра
+            var teams = teamResponse.Data?.ToList() ?? new List<Team>();
+
+            // Получаем категории
             var categoriesResponse = await _categoryService.GetCategoryListAsync();
-
             if (categoriesResponse.Success)
             {
                 ViewBag.Categories = categoriesResponse.Data;
 
-                // Передаем текущую категорию для выделения в фильтре
                 if (!string.IsNullOrEmpty(category))
                 {
                     var currentCategory = categoriesResponse.Data?
                         .FirstOrDefault(c => c.NormalizedName == category);
-                    ViewBag.CurrentCategory = currentCategory;
+                    ViewBag.CurrentCategory = currentCategory?.Name;
                 }
             }
 
+            // Рассчитываем дополнительные статистики
+            if (teams.Any())
+            {
+                ViewBag.TotalPoints = teams.Sum(t => t.Points);
+                ViewBag.TotalWins = teams.Sum(t => t.Wins);
+                ViewBag.AveragePosition = teams.Average(t => t.Position);
+                ViewBag.LeaderTeam = teams.OrderBy(t => t.Position).First();
+            }
 
-            return View(teamsResponse.Data);
+            return View(teams);
         }
-        
+
         //public async Task<IActionResult> Index(string? category)
         //{
         //    var teamResponse = await _teamService.GetTeamListAsync(category);

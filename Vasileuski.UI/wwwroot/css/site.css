@@ -5,3 +5,106 @@ header, footer {
 .nav-color {
     color: rgba(255, 255, 255, 0.5)
 }
+/* Стили для карточек команд */
+.team-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+    .team-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+.card-img-container {
+    border-bottom: 3px solid;
+    border-image: linear-gradient(to right, #007bff, #6610f2) 1;
+}
+
+/* Стили для статистики */
+.team-main-stats {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 15px 0;
+}
+
+.stat-item {
+    padding: 5px;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.team-detail-stats .bg-light {
+    transition: all 0.2s ease;
+}
+
+    .team-detail-stats .bg-light:hover {
+        background-color: #e9ecef !important;
+        transform: translateY(-2px);
+    }
+
+/* Анимации */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.btn-outline-warning:hover {
+    animation: pulse 0.3s ease;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .team-main-stats .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .card-img-container {
+        height: 150px !important;
+    }
+}
+
+/* Цвета для позиций */
+.position-1 {
+    border-left: 4px solid #FFD700;
+}
+/* Золото */
+.position-2 {
+    border-left: 4px solid #C0C0C0;
+}
+/* Серебро */
+.position-3 {
+    border-left: 4px solid #CD7F32;
+}
+/* Бронза */
+
+/* Стили для турнирной таблицы в карточке */
+.team-card[data-position="1"] {
+    border-top: 3px solid #FFD700;
+}
+
+.team-card[data-position="2"] {
+    border-top: 3px solid #C0C0C0;
+}
+
+.team-card[data-position="3"] {
+    border-top: 3px solid #CD7F32;
+}
