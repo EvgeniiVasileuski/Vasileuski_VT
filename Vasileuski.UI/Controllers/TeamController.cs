@@ -1,71 +1,91 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vasileuski.Domain.Entities;
-using Vasileuski.Domain.Repositories;
 using Vasileuski.UI.Models;
-using System.Linq;
+using Vasileuski.UI.Services;
 
 namespace Vasileuski.UI.Controllers
 {
     public class TeamController : Controller
     {
+        private readonly ITeamService _teamService;
+        private readonly ICategoryService _categoryService;
+
+        public TeamController(ITeamService teamService, ICategoryService categoryService)
+        {
+            _teamService = teamService;
+            _categoryService = categoryService;
+        }
+
         /// <summary>
         /// Главная страница со списком всех команд
         /// </summary>
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string? category)
         {
-            // Получаем все команды и сортируем по очкам (по убыванию)
-            var teams = SampleDataRepository.GetTeams()
-                .OrderByDescending(t => t.Points)
-                .ThenByDescending(t => t.GoalDifference)
-                .ToList();
+            // Получаем команды через сервис
+            var teamsResponse = await _teamService.GetTeamListAsync(category);
 
-            // Получаем все категории для фильтра
-            var categories = SampleDataRepository.GetCategories();
+            if (!teamsResponse.Success)
+                return NotFound(teamsResponse.ErrorMessage);
 
-            // Передаем в ViewBag для использования в представлении
-            ViewBag.Categories = categories;
+            // Получаем категории для фильтра
+            var categoriesResponse = await _categoryService.GetCategoryListAsync();
 
-            return View(teams);
+            if (categoriesResponse.Success)
+            {
+                ViewBag.Categories = categoriesResponse.Data;
+
+                // Передаем текущую категорию для выделения в фильтре
+                if (!string.IsNullOrEmpty(category))
+                {
+                    var currentCategory = categoriesResponse.Data?
+                        .FirstOrDefault(c => c.NormalizedName == category);
+                    ViewBag.CurrentCategory = currentCategory;
+                }
+            }
+
+
+            return View(teamsResponse.Data);
         }
+        
+        //public async Task<IActionResult> Index(string? category)
+        //{
+        //    var teamResponse = await _teamService.GetTeamListAsync(category);
+
+        //    if (!teamResponse.Success)
+        //        return NotFound(teamResponse.ErrorMessage);
+
+        //    return View(teamResponse.Data);
+        //}
 
         /// <summary>
-        /// Фильтрация команд по категории (по NormalizedName)
+        /// Детальная информация о команде
         /// </summary>
-        public IActionResult ByCategory(string categoryName)
+        public async Task<IActionResult> Details(int id)
         {
-            // Находим категорию по нормализованному имени
-            var category = SampleDataRepository.GetCategories()
-                .FirstOrDefault(c => c.NormalizedName == categoryName);
+            var response = await _teamService.GetTeamByIdAsync(id);
 
-            if (category == null)
+            if (!response.Success)
             {
-                // Если категория не найдена, возвращаем на главную
+                TempData["ErrorMessage"] = response.ErrorMessage;
                 return RedirectToAction("Index");
             }
 
-            // Получаем команды только этой категории и сортируем
-            var teams = SampleDataRepository.GetTeams()
-                .Where(t => t.CategoryId == category.Id)
-                .OrderByDescending(t => t.Points)
-                .ThenByDescending(t => t.GoalDifference)
-                .ToList();
-
-            var categories = SampleDataRepository.GetCategories();
-
-            // Передаем информацию о текущей категории
-            ViewBag.Categories = categories;
-            ViewBag.CurrentCategory = category;
-
-            return View("Index", teams);
+            return View(response.Data);
         }
 
         /// <summary>
-        /// Статистика команд (с использованием ViewModel)
+        /// Статистика команд
         /// </summary>
-        public IActionResult Statistics()
+        public async Task<IActionResult> Statistics()
         {
-            var teams = SampleDataRepository.GetTeams();
-            var categories = SampleDataRepository.GetCategories();
+            var teamsResponse = await _teamService.GetTeamListAsync(null);
+            var categoriesResponse = await _categoryService.GetCategoryListAsync();
+
+            if (!teamsResponse.Success || !categoriesResponse.Success)
+                return NotFound(teamsResponse.ErrorMessage ?? categoriesResponse.ErrorMessage);
+
+            var teams = teamsResponse.Data ?? new List<Team>();
+            var categories = categoriesResponse.Data ?? new List<Category>();
 
             // Находим команду с максимальным количеством очков
             var topTeam = teams.OrderByDescending(t => t.Points).FirstOrDefault();
@@ -79,172 +99,11 @@ namespace Vasileuski.UI.Controllers
                 MaxPoints = teams.Any() ? teams.Max(t => t.Points) : 0,
                 MinPoints = teams.Any() ? teams.Min(t => t.Points) : 0,
                 TopTeam = topTeam,
-                Categories = categories.ToList(),
-                Teams = teams.ToList()
+                Categories = categories,
+                Teams = teams
             };
 
             return View(model);
-        }
-
-        /// <summary>
-        /// Детальная информация о конкретной команде
-        /// </summary>
-        public IActionResult Details(int id)
-        {
-            var team = SampleDataRepository.GetTeams()
-                .FirstOrDefault(t => t.Id == id);
-
-            if (team == null)
-            {
-                // Если команда не найдена
-                TempData["ErrorMessage"] = $"Команда с ID {id} не найдена";
-                return RedirectToAction("Index");
-            }
-
-            // Получаем категорию команды, если она есть
-            if (team.CategoryId.HasValue)
-            {
-                var category = SampleDataRepository.GetCategories()
-                    .FirstOrDefault(c => c.Id == team.CategoryId.Value);
-                ViewBag.Category = category;
-            }
-
-            return View(team);
-        }
-
-        /// <summary>
-        /// Тестовый метод для проверки работы API/JSON
-        /// </summary>
-        [HttpGet]
-        public IActionResult ApiTest()
-        {
-            var teams = SampleDataRepository.GetTeams()
-                .Select(t => new
-                {
-                    t.Id,
-                    t.Name,
-                    t.Points,
-                    t.Location,
-                    Category = t.CategoryId.HasValue
-                        ? SampleDataRepository.GetCategories()
-                            .FirstOrDefault(c => c.Id == t.CategoryId.Value)?.Name
-                        : null
-                })
-                .ToList();
-
-            return Json(teams);
-        }
-
-        /// <summary>
-        /// Пример математических операций - сумма очков всех команд
-        /// </summary>
-        [HttpGet]
-        public IActionResult CalculateTotalPoints()
-        {
-            var teams = SampleDataRepository.GetTeams();
-            var totalPoints = teams.Sum(t => t.Points);
-
-            ViewBag.TotalPoints = totalPoints;
-            ViewBag.TeamCount = teams.Count;
-            ViewBag.AveragePoints = teams.Any()
-                ? Math.Round(teams.Average(t => t.Points), 2)
-                : 0;
-
-            return View();
-        }
-
-        /// <summary>
-        /// Постраничный вывод команд
-        /// </summary>
-        [HttpGet]
-        public IActionResult Paged(int page = 1, int pageSize = 3)
-        {
-            var allTeams = SampleDataRepository.GetTeams()
-                .OrderByDescending(t => t.Points)
-                .ToList();
-
-            var totalCount = allTeams.Count;
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            // Проверка границ страницы
-            if (page < 1) page = 1;
-            if (page > totalPages && totalPages > 0) page = totalPages;
-
-            var pagedTeams = allTeams
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = totalCount;
-            ViewBag.HasPrevious = page > 1;
-            ViewBag.HasNext = page < totalPages;
-
-            return View(pagedTeams);
-        }
-
-        /// <summary>
-        /// Фильтр команд по количеству очков
-        /// </summary>
-        [HttpGet]
-        public IActionResult FilterByPoints(int minPoints = 0, int maxPoints = 100)
-        {
-            var teams = SampleDataRepository.GetTeams()
-                .Where(t => t.Points >= minPoints && t.Points <= maxPoints)
-                .OrderByDescending(t => t.Points)
-                .ToList();
-
-            var categories = SampleDataRepository.GetCategories();
-
-            ViewBag.Categories = categories;
-            ViewBag.MinPoints = minPoints;
-            ViewBag.MaxPoints = maxPoints;
-            ViewBag.FilteredCount = teams.Count;
-
-            return View("Index", teams);
-        }
-
-        /// <summary>
-        /// Таблица лидеров (топ-N команд)
-        /// </summary>
-        [HttpGet]
-        public IActionResult Leaderboard(int top = 5)
-        {
-            var teams = SampleDataRepository.GetTeams()
-                .OrderByDescending(t => t.Points)
-                .ThenByDescending(t => t.GoalDifference)
-                .Take(top)
-                .ToList();
-
-            ViewBag.TopCount = top;
-
-            return View(teams);
-        }
-
-        /// <summary>
-        /// Тестовый метод для проверки связи Team-Category
-        /// </summary>
-        [HttpGet]
-        public IActionResult TestRelationship()
-        {
-            var teams = SampleDataRepository.GetTeams();
-            var categories = SampleDataRepository.GetCategories();
-
-            var teamCategoryInfo = teams.Select(t => new
-            {
-                TeamName = t.Name,
-                TeamPoints = t.Points,
-                CategoryName = t.CategoryId.HasValue
-                    ? categories.FirstOrDefault(c => c.Id == t.CategoryId.Value)?.Name
-                    : "Без категории",
-                CategoryNormalizedName = t.CategoryId.HasValue
-                    ? categories.FirstOrDefault(c => c.Id == t.CategoryId.Value)?.NormalizedName
-                    : null
-            }).ToList();
-
-            return View(teamCategoryInfo);
         }
     }
 }

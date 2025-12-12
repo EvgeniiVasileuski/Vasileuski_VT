@@ -1,0 +1,58 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@* @{
+    ViewData["Title"] = "Тест сервисов";
+}
+
+<h1>Тест сервисов</h1>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Результаты работы сервисов</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Сервис команд (ITeamService):</h6>
+                <ul>
+                    <li>
+                        Статус: <span class="@(ViewBag.TeamsSuccess ? "text-success" : "text-danger")">
+                            @(ViewBag.TeamsSuccess ? "Успешно" : "Ошибка")
+                        </span>
+                    </li>
+                    <li>Количество команд: @ViewBag.TeamsCount</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6>Сервис категорий (ICategoryService):</h6>
+                <ul>
+                    <li>
+                        Статус: <span class="@(ViewBag.CategoriesSuccess ? "text-success" : "text-danger")">
+                            @(ViewBag.CategoriesSuccess ? "Успешно" : "Ошибка")
+                        </span>
+                    </li>
+                    <li>Количество категорий: @ViewBag.CategoriesCount</li>
+                </ul>
+            </div>
+        </div>
+
+        @if (ViewBag.TeamsSuccess && ViewBag.CategoriesSuccess)
+        {
+            <div class="alert alert-success mt-3">
+                <strong>Отлично!</strong> Оба сервиса работают корректно.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger mt-3">
+                <strong>Внимание!</strong> Возникли проблемы с работой сервисов.
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">Вернуться к списку команд</a>
+</div>
+ *@

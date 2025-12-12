@@ -14,13 +14,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.14" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\Images\" />
-	  
-  </ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Vasileuski.Domain\Vasileuski.Domain.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="wwwroot\images\categories\" />
 	</ItemGroup>
 
 </Project>

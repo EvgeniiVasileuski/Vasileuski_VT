@@ -16,9 +16,9 @@
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryDropdown"
                 data-bs-toggle="dropdown" aria-expanded="false">
-            @if (ViewBag.Category != null)
+            @if (ViewBag.CurrentCategory != null)
             {
-                @ViewBag.Category.Name
+                @ViewBag.CurrentCategory.Name
             }
             else
             {
@@ -30,7 +30,7 @@
             @foreach (var category in ViewBag.Categories)
             {
                 <li>
-                    <a class="dropdown-item" asp-action="ByCategory" asp-route-categoryName="@category.NormalizedName">
+                    <a class="dropdown-item" asp-action="Index" asp-route-category="@category.NormalizedName">
                         @category.Name
                     </a>
                 </li>
@@ -39,7 +39,13 @@
     </div>
 </div>
 
-<!-- Таблица команд -->
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        <strong>Ошибка:</strong> @ViewBag.ErrorMessage
+    </div>
+}
+
 @if (!Model.Any())
 {
     <div class="alert alert-warning">
@@ -64,7 +70,7 @@ else
             @{
                 int counter = 1;
             }
-            @foreach (var team in Model.OrderByDescending(t => t.Points))
+            @foreach (var team in Model)
             {
                 <tr>
                     <td>@counter</td>
@@ -82,6 +88,10 @@ else
                             var category = (ViewBag.Categories as List<Category>)?.FirstOrDefault(c => c.Id == team.CategoryId);
                             @category?.Name
                         }
+                        else
+                        {
+                            <span class="text-muted">Без категории</span>
+                        }
                     </td>
                     <td>
                         <span class="badge bg-success">@team.Points</span>
@@ -89,7 +99,7 @@ else
                     <td>@team.Position</td>
                     <td>@team.Location</td>
                     <td>
-                        <a class="btn btn-sm btn-info" href="#">Подробнее</a>
+                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@team.Id">Подробнее</a>
                     </td>
                 </tr>
                 counter++;
@@ -123,4 +133,5 @@ else
 
 <div class="mt-4">
     <a asp-action="Statistics" class="btn btn-primary">Полная статистика</a>
+    @* <a asp-action="TestService" class="btn btn-secondary">Тест сервисов</a> *@
 </div>
