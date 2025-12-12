@@ -138,6 +138,12 @@ btn btn-link text-dark">
             background-color: #f8f9fa;
             border: none;
         }
+        /* Стиль для активного пункта меню */
+        .navbar-nav .nav-link.active {
+            font-weight: bold;
+            color: #007bff !important;
+            border-bottom: 2px solid #007bff;
+        }
     </style>
 </head>
 <body>
@@ -150,7 +156,7 @@ btn btn-link text-dark">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- Главное меню с Tag Helpers -->
+                    @* <!-- Главное меню с Tag Helpers -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Л61</a>
@@ -161,8 +167,10 @@ btn btn-link text-dark">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Admin" asp-page="/Index">Администрирование</a>
                         </li>
-                    </ul>
+                    </ul> *@
 
+                    <!-- Вызов компонента меню -->
+                    @await Component.InvokeAsync("Menu")
                     <!-- Частичное представление информации о пользователе -->
                     <partial name="_UserInfoPartial" />
                 </div>
