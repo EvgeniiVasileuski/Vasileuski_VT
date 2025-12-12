@@ -1,0 +1,108 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model StatisticsViewModel
+
+@{
+    ViewData["Title"] = "Статистика команд";
+}
+
+<h1>Статистика спортивных команд</h1>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Основная статистика</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>Всего команд:</strong> @Model.TotalTeams
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Сумма всех очков:</strong> @Model.TotalPoints
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Среднее очков на команду:</strong> @Math.Round(Model.AveragePoints, 2)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Максимальное количество очков:</strong> @Model.MaxPoints
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Минимальное количество очков:</strong> @Model.MinPoints
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Лучшая команда</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.TopTeam != null)
+                {
+                    <h5>@Model.TopTeam.Name</h5>
+                    <p>
+                        <strong>Очки:</strong> <span class="badge bg-success">@Model.TopTeam.Points</span><br>
+                        <strong>Место:</strong> @Model.TopTeam.Position<br>
+                        <strong>Город:</strong> @Model.TopTeam.Location<br>
+                        <strong>Категория:</strong>
+                        @if (Model.TopTeam.CategoryId.HasValue)
+                        {
+                            var category = Model.Categories.FirstOrDefault(c => c.Id == Model.TopTeam.CategoryId);
+                            @category?.Name
+                        }
+                    </p>
+                }
+                else
+                {
+                    <p>Нет данных о лучшей команде</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Статистика по категориям -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Статистика по категориям</h5>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Категория</th>
+                    <th>Количество команд</th>
+                    <th>Сумма очков</th>
+                    <th>Среднее очков</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in Model.Categories)
+                {
+                    var teamsInCategory = Model.Teams
+                    .Where(t => t.CategoryId == category.Id).ToList();
+                    var totalPoints = teamsInCategory.Sum(t => t.Points);
+                    var avgPoints = teamsInCategory.Any() ?
+                    Math.Round(teamsInCategory.Average(t => t.Points), 2) : 0;
+
+                    <tr>
+                        <td>@category.Name</td>
+                        <td>@teamsInCategory.Count</td>
+                        <td>@totalPoints</td>
+                        <td>@avgPoints</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку команд</a>
+</div>

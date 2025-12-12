@@ -17,6 +17,10 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Images\" />
+	  
   </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Vasileuski.Domain\Vasileuski.Domain.csproj" />
+	</ItemGroup>
 
 </Project>

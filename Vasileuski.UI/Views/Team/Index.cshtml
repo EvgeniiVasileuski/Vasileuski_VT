@@ -1,0 +1,126 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+@model IEnumerable<Team>
+
+@{
+    ViewData["Title"] = "Спортивные команды";
+}
+
+<h1>Спортивные команды</h1>
+
+<!-- Фильтр по категориям -->
+<div class="mb-4">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+            @if (ViewBag.Category != null)
+            {
+                @ViewBag.Category.Name
+            }
+            else
+            {
+                @:Все категории
+            }
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+            <li><a class="dropdown-item" asp-action="Index">Все категории</a></li>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <li>
+                    <a class="dropdown-item" asp-action="ByCategory" asp-route-categoryName="@category.NormalizedName">
+                        @category.Name
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<!-- Таблица команд -->
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">
+        Команды не найдены
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Команда</th>
+                <th>Категория</th>
+                <th>Очки</th>
+                <th>Место</th>
+                <th>Город</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int counter = 1;
+            }
+            @foreach (var team in Model.OrderByDescending(t => t.Points))
+            {
+                <tr>
+                    <td>@counter</td>
+                    <td>
+                        <strong>@team.Name</strong>
+                        @if (!string.IsNullOrEmpty(team.Image))
+                        {
+                            <br>
+                            <img src="@team.Image" alt="@team.Name" style="max-height: 50px; max-width: 50px;" />
+                        }
+                    </td>
+                    <td>
+                        @if (team.CategoryId.HasValue)
+                        {
+                            var category = (ViewBag.Categories as List<Category>)?.FirstOrDefault(c => c.Id == team.CategoryId);
+                            @category?.Name
+                        }
+                    </td>
+                    <td>
+                        <span class="badge bg-success">@team.Points</span>
+                    </td>
+                    <td>@team.Position</td>
+                    <td>@team.Location</td>
+                    <td>
+                        <a class="btn btn-sm btn-info" href="#">Подробнее</a>
+                    </td>
+                </tr>
+                counter++;
+            }
+        </tbody>
+    </table>
+
+    <!-- Статистика -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Статистика</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>Всего команд:</strong> @Model.Count()
+                </div>
+                <div class="col-md-3">
+                    <strong>Сумма очков:</strong> @Model.Sum(t => t.Points)
+                </div>
+                <div class="col-md-3">
+                    <strong>Среднее очков:</strong> @Math.Round(Model.Average(t => t.Points), 1)
+                </div>
+                <div class="col-md-3">
+                    <strong>Лидер:</strong> @Model.OrderByDescending(t => t.Points).FirstOrDefault()?.Name
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="mt-4">
+    <a asp-action="Statistics" class="btn btn-primary">Полная статистика</a>
+</div>

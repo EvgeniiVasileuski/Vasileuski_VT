@@ -2,23 +2,13 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    // Получаем данные, переданные из компонента
     var controller = ViewData["Controller"]?.ToString()?.ToLower() ?? string.Empty;
     var area = ViewData["Area"]?.ToString()?.ToLower() ?? string.Empty;
-
-    // Дополнительно можно получить имя действия
-    var action = ViewContext.RouteData.Values["action"]?.ToString()?.ToLower() ?? string.Empty;
-
-    // Для отладки (можно удалить)
-    @* <div style="display: none;">
-        Controller: @controller, Area: @area, Action: @action
-    </div> *@
 }
 
 <ul class="navbar-nav flex-grow-1">
-    <!-- Пункт меню: Лб 1 -->
     <li class="nav-item">
-        <a class="nav-link  @(controller == "home" && area == "" ? "active" : "")"
+        <a class="nav-link text-dark @(controller == "home" && area == "" ? "active" : "")"
            asp-area=""
            asp-controller="Home"
            asp-action="Index">
@@ -26,9 +16,18 @@
         </a>
     </li>
 
-    <!-- Пункт меню: Каталог -->
+    <!-- ДОБАВЬТЕ ЭТУ ССЫЛКУ: -->
     <li class="nav-item">
-        <a class="nav-link  @(controller == "product" ? "active" : "")"
+        <a class="nav-link text-dark @(controller == "team" ? "active" : "")"
+           asp-area=""
+           asp-controller="Team"
+           asp-action="Index">
+            Спортивные команды
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link text-dark @(controller == "product" ? "active" : "")"
            asp-area=""
            asp-controller="Product"
            asp-action="Index">
@@ -36,24 +35,11 @@
         </a>
     </li>
 
-    <!-- Пункт меню: Администрирование -->
     <li class="nav-item">
-        <a class="nav-link  @(area == "admin" ? "active" : "")"
+        <a class="nav-link text-dark @(area == "admin" ? "active" : "")"
            asp-area="Admin"
            asp-page="/Index">
             Администрирование
         </a>
     </li>
-
-    <!-- Пример дополнительных пунктов меню (если нужно) -->
-    @*
-    <li class="nav-item">
-        <a class="nav-link text-dark @(controller == "cart" ? "active" : "")" 
-           asp-area="" 
-           asp-controller="Cart" 
-           asp-action="Index">
-           Корзина
-        </a>
-    </li>
-    *@
 </ul>
