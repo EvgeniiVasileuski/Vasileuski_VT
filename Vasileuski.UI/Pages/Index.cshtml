@@ -1,0 +1,171 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = ViewData["PageTitle"] ?? "Спортивные команды";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    @if (Model.SelectedCategoryId.HasValue && ViewData["SelectedCategory"] != null)
+    {
+        <h5>Категория: @ViewData["SelectedCategory"]</h5>
+    }
+
+    <!-- Фильтр по категориям -->
+    <div class="mb-4">
+        <h6>Фильтр по категориям</h6>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="/" class="btn @(!Model.SelectedCategoryId.HasValue ? "btn-primary" : "btn-outline-primary")">
+                Все команды
+            </a>
+
+            @foreach (var category in Model.Categories)
+            {
+                var isActive = Model.SelectedCategoryId == category.Id;
+                <a href="/?categoryId=@category.Id"
+                   class="btn @(isActive ? "btn-primary" : "btn-outline-secondary")">
+                    @category.Name
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center border-primary">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">@Model.TotalPoints</h5>
+                    <p class="card-text text-muted">Всего очков</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">@Model.TotalWins</h5>
+                    <p class="card-text text-muted">Всего побед</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">@Model.AveragePoints</h5>
+                    <p class="card-text text-muted">Среднее очков</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center border-info">
+                <div class="card-body">
+                    <h5 class="card-title text-info">@Model.TeamCount</h5>
+                    <p class="card-text text-muted">Команд</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Список команд -->
+    <div class="row">
+        @if (Model.Teams.Any())
+        {
+            @foreach (var team in Model.Teams)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">@team.Name</h5>
+                            <span class="badge bg-light text-dark">#@team.Position</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <span class="badge bg-success fs-6 p-2">
+                                    <i class="bi bi-trophy"></i> @team.Points очков
+                                </span>
+                            </div>
+
+                            <p class="card-text text-muted mb-2">
+                                <i class="bi bi-geo-alt"></i> @team.Location
+                            </p>
+
+                            @if (!string.IsNullOrEmpty(team.Description))
+                            {
+                                <p class="card-text">@team.Description</p>
+                            }
+
+                            <div class="row mt-3">
+                                <div class="col-4 text-center">
+                                    <div class="text-success">
+                                        <strong>@team.Wins</strong>
+                                        <div><small>Побед</small></div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="text-danger">
+                                        <strong>@team.Losses</strong>
+                                        <div><small>Поражений</small></div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="text-warning">
+                                        <strong>@team.Draws</strong>
+                                        <div><small>Ничьих</small></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(team.HeadCoach))
+                            {
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-person-badge"></i> Тренер: @team.HeadCoach
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer bg-light">
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar"></i> Основан: @team.FoundedYear
+                                </small>
+                                @if (team.CategoryId.HasValue)
+                                {
+                                    <small class="text-muted">
+                                        @{
+                                            var teamCategory = Model.Categories.FirstOrDefault(c => c.Id == team.CategoryId.Value);
+                                            if (teamCategory != null)
+                                            {
+                                                <i class="bi bi-tag"></i> @teamCategory.Name
+                                            }
+                                        }
+                                    </small>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-warning text-center py-5">
+                    <h4 class="alert-heading">
+                        <i class="bi bi-exclamation-triangle"></i> Команды не найдены
+                    </h4>
+                    <p>В выбранной категории пока нет спортивных команд.</p>
+                    <hr>
+                    <a href="/" class="btn btn-primary">
+                        <i class="bi bi-arrow-left"></i> Вернуться ко всем командам
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
