@@ -1,0 +1,70 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@page
+@model Vasileuski.UI.Areas.Admin.Pages.Teams.IndexModel
+@using Vasileuski.UI.Services
+@using Vasileuski.Domain.Entities
+@{
+    ViewData["Title"] = "Управление командами";
+}
+
+<h1>Управление командами</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-success">
+        <i class="fas fa-plus"></i> Создать новую команду
+    </a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Логотип</th>
+            <th>Название</th>
+            <th>Очки</th>
+            <th>Позиция</th>
+            <th>Категория</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Team)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <img src="@item.Image" alt="@item.Name"
+                             style="max-width: 50px; max-height: 50px; object-fit: contain;" />
+                    }
+                    else
+                    {
+                        <i class="fas fa-users text-muted"></i>
+                    }
+                </td>
+                <td>@item.Name</td>
+                <td>
+                    <span class="badge bg-primary">@item.Points</span>
+                </td>
+                <td>#@item.Position</td>
+                <td>@item.Category?.Name</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

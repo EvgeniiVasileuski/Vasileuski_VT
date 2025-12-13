@@ -13,7 +13,12 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+
+// Для генерации страниц администратора (временно)
+builder.Services.AddDbContext<TempDbContext>(options =>
+    options.UseInMemoryDatabase("TempAdminDb"));
 
 builder.Services.AddScoped<ICategoryService, MemoryCategoryService>();
 builder.Services.AddScoped<ITeamService, MemoryTeamService>();
@@ -54,6 +59,13 @@ app.UseResponseCaching();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Team}/{action=Index}/{id?}");
+
+// Для областей (Admin Area)
+app.MapAreaControllerRoute(
+    name: "Admin",
+    areaName: "Admin",
+    pattern: "Admin/{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 

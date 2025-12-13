@@ -1,82 +1,98 @@
 ﻿using Vasileuski.Domain.Entities;
-using Vasileuski.Domain.Models;
 
 namespace Vasileuski.UI.Services
 {
-    /// <summary>
-    /// Сервис для работы с категориями в памяти
-    /// </summary>
     public class MemoryCategoryService : ICategoryService
     {
-        private List<Category> _categories;
+        private readonly List<Category> _categories = new List<Category>();
+        private int _nextId = 1;
 
         public MemoryCategoryService()
         {
-            SetupData();
+            InitializeTestData();
         }
 
-        /// <summary>
-        /// Наполнение данных категориями
-        /// </summary>
-        private void SetupData()
+        private void InitializeTestData()
         {
-            _categories = new List<Category>
+            _categories.Add(new Category
             {
-                new Category
+                Id = _nextId++,
+                Name = "Хоккей",
+                NormalizedName = "hockey",
+                Description = "Хоккейные команды",
+                Image = "/images/categories/hockey.png" // Добавьте свойство Image в модель Category
+            });
+
+            _categories.Add(new Category
+            {
+                Id = _nextId++,
+                Name = "Футбол",
+                NormalizedName = "football",
+                Description = "Футбольные команды",
+                Image = "/images/categories/football.png"
+            });
+
+            _categories.Add(new Category
+            {
+                Id = _nextId++,
+                Name = "Баскетбол",
+                NormalizedName = "basketball",
+                Description = "Баскетбольные команды",
+                Image = "/images/categories/basketball.png"
+            });
+
+            _categories.Add(new Category
+            {
+                Id = _nextId++,
+                Name = "Теннис",
+                NormalizedName = "tennis",
+                Description = "Теннисные команды",
+                Image = "/images/categories/tennis.png"
+            });
+
+            _categories.Add(new Category
+            {
+                Id = _nextId++,
+                Name = "Волейбол",
+                NormalizedName = "volleyball",
+                Description = "Волейбольные команды",
+                Image = "/images/categories/volleyball.png"
+            });
+        }
+
+        // Исправленный метод - возвращает Task<ServiceResponse<IEnumerable<Category>>>
+        public Task<ServiceResponse<IEnumerable<Category>>> GetCategoryListAsync()
+        {
+            try
+            {
+                return Task.FromResult(ServiceResponse<IEnumerable<Category>>.Ok(_categories));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ServiceResponse<IEnumerable<Category>>.Error(
+                    $"Ошибка при получении категорий: {ex.Message}"));
+            }
+        }
+
+        public Task<ServiceResponse<Category>> GetCategoryByIdAsync(int id)
+        {
+            try
+            {
+                var category = _categories.FirstOrDefault(c => c.Id == id);
+
+                if (category == null)
                 {
-                    Id = 1,
-                    Name = "Футбол",
-                    NormalizedName = "football",
-                    Description = "Футбольные лиги и турниры",
-                    Image = "/images/categories/football.png"
-                },
-                new Category
-                {
-                    Id = 2,
-                    Name = "Баскетбол",
-                    NormalizedName = "basketball",
-                    Description = "Баскетбольные лиги и турниры",
-                    Image = "/images/categories/basketball.png"
-                },
-                new Category
-                {
-                    Id = 3,
-                    Name = "Хоккей",
-                    NormalizedName = "hockey",
-                    Description = "Хоккейные лиги и турниры",
-                    Image = "/images/categories/hockey.png"
-                },
-                new Category
-                {
-                    Id = 4,
-                    Name = "Теннис",
-                    NormalizedName = "tennis",
-                    Description = "Теннисные турниры и ассоциации",
-                    Image = "/images/categories/tennis.png"
-                },
-                new Category
-                {
-                    Id = 5,
-                    Name = "Волейбол",
-                    NormalizedName = "volleyball",
-                    Description = "Волейбольные лиги и турниры",
-                    Image = "/images/categories/volleyball.png"
+                    return Task.FromResult(ServiceResponse<Category>.Error(
+                        $"Категория с ID {id} не найдена"));
                 }
-            };
-        }
 
-        /// <summary>
-        /// Получение списка всех категорий
-        /// </summary>
-        public Task<ResponseData<List<Category>>> GetCategoryListAsync()
-        {
-            var result = new ResponseData<List<Category>>
+                return Task.FromResult(ServiceResponse<Category>.Ok(category));
+            }
+            catch (Exception ex)
             {
-                Data = _categories,
-                Success = true
-            };
-
-            return Task.FromResult(result);
+                return Task.FromResult(ServiceResponse<Category>.Error(
+                    $"Ошибка при получении категории: {ex.Message}"));
+            }
         }
     }
 }

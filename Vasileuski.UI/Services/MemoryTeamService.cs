@@ -1,289 +1,442 @@
 ﻿using Vasileuski.Domain.Entities;
-using Vasileuski.Domain.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace Vasileuski.UI.Services
 {
-    /// <summary>
-    /// Сервис для работы с командами в памяти
-    /// </summary>
     public class MemoryTeamService : ITeamService
     {
-        private List<Team> _teams;
-        private List<Category> _categories;
+        private readonly List<Team> _teams = new List<Team>();
+        private int _nextId = 1;
 
-        public MemoryTeamService(ICategoryService categoryService)
+        public MemoryTeamService()
         {
-            // Получаем категории через сервис категорий
-            _categories = categoryService.GetCategoryListAsync()
-                .Result
-                .Data ?? new List<Category>();
-
-            SetupData();
+            InitializeTestData();
         }
 
-        /// <summary>
-        /// Наполнение данных командами
-        /// </summary>
-        private void SetupData()
+        private void InitializeTestData()
         {
-            // Находим ID категорий по нормализованным именам
-            var footballCategory = _categories.Find(c => c.NormalizedName.Equals("football"));
-            var basketballCategory = _categories.Find(c => c.NormalizedName.Equals("basketball"));
-            var hockeyCategory = _categories.Find(c => c.NormalizedName.Equals("hockey"));
-            var tennisCategory = _categories.Find(c => c.NormalizedName.Equals("tennis"));
-
-            _teams = new List<Team>
+            // ХОККЕЙНЫЕ КОМАНДЫ (CategoryId = 1)
+            _teams.Add(new Team
             {
-                // Футбольные команды
-                new Team
-                {
-                    Id = 1,
-                    Name = "Спартак Москва",
-                    Description = "Один из самых популярных футбольных клубов России",
-                    Points = 52,
-                    CategoryId = footballCategory?.Id,
-                    Image = "/images/teams/spartak.png",
-                    Location = "Москва, Россия",
-                    FoundedYear = 1922,
-                    HeadCoach = "Гильермо Абаскаль",
-                    Captain = "Георгий Джикия",
-                    Stadium = "Открытие Банк Арена",
-                    Wins = 16,
-                    Losses = 4,
-                    Draws = 4,
-                    GoalsFor = 48,
-                    GoalsAgainst = 25,
-                    Position = 1,
-                    Colors = "Красно-белые"
-                },
-                new Team
-                {
-                    Id = 2,
-                    Name = "Зенит Санкт-Петербург",
-                    Description = "Действующий чемпион России",
-                    Points = 50,
-                    CategoryId = footballCategory?.Id,
-                    Image = "/images/teams/zenit.png",
-                    Location = "Санкт-Петербург, Россия",
-                    FoundedYear = 1925,
-                    HeadCoach = "Сергей Семак",
-                    Captain = "Дмитрий Чистяков",
-                    Stadium = "Газпром Арена",
-                    Wins = 15,
-                    Losses = 5,
-                    Draws = 4,
-                    GoalsFor = 52,
-                    GoalsAgainst = 22,
-                    Position = 2,
-                    Colors = "Сине-бело-голубые"
-                },
-                new Team
-                {
-                    Id = 3,
-                    Name = "Локомотив Москва",
-                    Description = "Один из старейших футбольных клубов России",
-                    Points = 48,
-                    CategoryId = footballCategory?.Id,
-                    Image = "/images/teams/lokomotiv.png",
-                    Location = "Москва, Россия",
-                    FoundedYear = 1922,
-                    HeadCoach = "Михаил Галактионов",
-                    Captain = "Дмитрий Баринов",
-                    Stadium = "РЖД Арена",
-                    Wins = 14,
-                    Losses = 6,
-                    Draws = 4,
-                    GoalsFor = 45,
-                    GoalsAgainst = 28,
-                    Position = 3,
-                    Colors = "Красно-зеленые"
-                },
+                Id = _nextId++,
+                Name = "СКА Санкт-Петербург",
+                Description = "Один из ведущих хоккейных клубов России",
+                Points = 108,
+                Location = "Санкт-Петербург, Россия",
+                FoundedYear = 1946,
+                HeadCoach = "Роман Ротенберг",
+                Captain = "Василий Подколзин",
+                Stadium = "Ледовый дворец",
+                Wins = 36,
+                Draws = 0,
+                Losses = 12,
+                GoalsFor = 182,
+                GoalsAgainst = 110,
+                Position = 1,
+                Colors = "#00008B,#FFFFFF",
+                Image = "/images/teams/ska.png",
+                CategoryId = 1, // Хоккей
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
 
-                // Баскетбольные команды
-                new Team
-                {
-                    Id = 4,
-                    Name = "Лос-Анджелес Лейкерс",
-                    Description = "Легендарный баскетбольный клуб из Лос-Анджелеса",
-                    Points = 42,
-                    CategoryId = basketballCategory?.Id,
-                    Image = "/images/teams/lakers.png",
-                    Location = "Лос-Анджелес, США",
-                    FoundedYear = 1947,
-                    HeadCoach = "Дарвин Хэм",
-                    Captain = "ЛеБрон Джеймс",
-                    Stadium = "Крайпл-центр",
-                    Wins = 43,
-                    Losses = 39,
-                    Draws = 0,
-                    GoalsFor = 11640,
-                    GoalsAgainst = 11560,
-                    Position = 7,
-                    Colors = "Фиолетовый, золотой, черный"
-                },
-                new Team
-                {
-                    Id = 5,
-                    Name = "Голден Стэйт Уорриорз",
-                    Description = "Один из самых успешных клубов последнего десятилетия",
-                    Points = 44,
-                    CategoryId = basketballCategory?.Id,
-                    Image = "/images/teams/warriors.png",
-                    Location = "Сан-Франциско, США",
-                    FoundedYear = 1946,
-                    HeadCoach = "Стив Керр",
-                    Captain = "Стефен Карри",
-                    Stadium = "Чейз-центр",
-                    Wins = 44,
-                    Losses = 38,
-                    Draws = 0,
-                    GoalsFor = 11800,
-                    GoalsAgainst = 11700,
-                    Position = 6,
-                    Colors = "Синий, желтый"
-                },
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "ЦСКА Москва",
+                Description = "Профессиональный хоккейный клуб",
+                Points = 98,
+                Location = "Москва, Россия",
+                FoundedYear = 1946,
+                HeadCoach = "Сергей Федоров",
+                Captain = "Никита Нестеров",
+                Stadium = "ЦСКА Арена",
+                Wins = 32,
+                Draws = 2,
+                Losses = 14,
+                GoalsFor = 165,
+                GoalsAgainst = 105,
+                Position = 2,
+                Colors = "#FF0000,#0000FF",
+                Image = "/images/teams/cska.png",
+                CategoryId = 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
 
-                // Хоккейные команды
-                new Team
-                {
-                    Id = 6,
-                    Name = "СКА Санкт-Петербург",
-                    Description = "Один из ведущих хоккейных клубов России",
-                    Points = 108,
-                    CategoryId = hockeyCategory?.Id,
-                    Image = "/images/teams/ska.png",
-                    Location = "Санкт-Петербург, Россия",
-                    FoundedYear = 1946,
-                    HeadCoach = "Роман Ротенберг",
-                    Captain = "Василий Подколзин",
-                    Stadium = "Ледовый дворец",
-                    Wins = 36,
-                    Losses = 12,
-                    Draws = 0,
-                    GoalsFor = 182,
-                    GoalsAgainst = 110,
-                    Position = 1,
-                    Colors = "Красный, синий"
-                },
-                new Team
-                {
-                    Id = 7,
-                    Name = "ЦСКА Москва",
-                    Description = "Легендарный хоккейный клуб",
-                    Points = 102,
-                    CategoryId = hockeyCategory?.Id,
-                    Image = "/images/teams/cska.png",
-                    Location = "Москва, Россия",
-                    FoundedYear = 1946,
-                    HeadCoach = "Сергей Фёдоров",
-                    Captain = "Никита Нестеров",
-                    Stadium = "ЦСКА Арена",
-                    Wins = 34,
-                    Losses = 14,
-                    Draws = 0,
-                    GoalsFor = 175,
-                    GoalsAgainst = 115,
-                    Position = 2,
-                    Colors = "Красно-синие"
-                },
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Локомотив",
+                Description = "Хоккейный клуб из Ярославля",
+                Points = 85,
+                Location = "Ярославль, Россия",
+                FoundedYear = 1959,
+                HeadCoach = "Игорь Никитин",
+                Captain = "Станислав Бочаров",
+                Stadium = "Арена 2000",
+                Wins = 28,
+                Draws = 1,
+                Losses = 19,
+                GoalsFor = 150,
+                GoalsAgainst = 125,
+                Position = 3,
+                Colors = "#FF0000,#000000",
+                Image = "/images/teams/lokomotiv.png",
+                CategoryId = 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
 
-                // Теннис (индивидуальные спортсмены представлены как команды из 1 человека)
-                new Team
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Спартак Москва",
+                Description = "Один из старейших хоккейных клубов России",
+                Points = 80,
+                Location = "Москва, Россия",
+                FoundedYear = 1946,
+                HeadCoach = "Борис Михайлов",
+                Captain = "Александр Хохлачев",
+                Stadium = "ЛДС Спартак",
+                Wins = 26,
+                Draws = 2,
+                Losses = 20,
+                GoalsFor = 142,
+                GoalsAgainst = 130,
+                Position = 4,
+                Colors = "#FF0000,#FFFFFF",
+                Image = "/images/teams/spartak.png",
+                CategoryId = 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+
+            // ФУТБОЛЬНЫЕ КОМАНДЫ (CategoryId = 2)
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Зенит",
+                Description = "Футбольный клуб из Санкт-Петербурга",
+                Points = 65,
+                Location = "Санкт-Петербург, Россия",
+                FoundedYear = 1925,
+                HeadCoach = "Сергей Семак",
+                Captain = "Денис Черышев",
+                Stadium = "Газпром Арена",
+                Wins = 20,
+                Draws = 5,
+                Losses = 13,
+                GoalsFor = 120,
+                GoalsAgainst = 85,
+                Position = 5,
+                Colors = "#0000FF,#FFFFFF",
+                Image = "/images/teams/zenit.png",
+                CategoryId = 2,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Спартак Москва (футбол)",
+                Description = "Футбольный клуб из Москвы",
+                Points = 60,
+                Location = "Москва, Россия",
+                FoundedYear = 1922,
+                HeadCoach = "Гильермо Абаскаль",
+                Captain = "Георгий Джикия",
+                Stadium = "Открытие Банк Арена",
+                Wins = 18,
+                Draws = 6,
+                Losses = 14,
+                GoalsFor = 110,
+                GoalsAgainst = 90,
+                Position = 6,
+                Colors = "#FF0000,#FFFFFF",
+                Image = "/images/teams/spartak.png",
+                CategoryId = 2,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+
+            // БАСКЕТБОЛЬНЫЕ КОМАНДЫ (CategoryId = 3)
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Лос-Анджелес Лейкерс",
+                Description = "Профессиональный баскетбольный клуб из США",
+                Points = 55,
+                Location = "Лос-Анджелес, США",
+                FoundedYear = 1947,
+                HeadCoach = "Дарвин Хэм",
+                Captain = "ЛеБрон Джеймс",
+                Stadium = "Крипто-ком Арена",
+                Wins = 25,
+                Draws = 0,
+                Losses = 25,
+                GoalsFor = 115,
+                GoalsAgainst = 115,
+                Position = 7,
+                Colors = "#552583,#FDB927",
+                Image = "/images/teams/lakers.png",
+                CategoryId = 3,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Голден Стэйт Уорриорз",
+                Description = "Профессиональный баскетбольный клуб из США",
+                Points = 50,
+                Location = "Сан-Франциско, США",
+                FoundedYear = 1946,
+                HeadCoach = "Стив Керр",
+                Captain = "Стефен Карри",
+                Stadium = "Чейз Центр",
+                Wins = 22,
+                Draws = 0,
+                Losses = 28,
+                GoalsFor = 112,
+                GoalsAgainst = 118,
+                Position = 8,
+                Colors = "#1D428A,#FFC72C",
+                Image = "/images/teams/warriors.png",
+                CategoryId = 3,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+
+            // ТЕННИС (CategoryId = 4) - обычно это индивидуальный вид спорта
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Новак Джокович",
+                Description = "Профессиональный теннисист, серб",
+                Points = 120,
+                Location = "Белград, Сербия",
+                FoundedYear = 1987,
+                HeadCoach = "Горан Иванишевич",
+                Captain = "Новак Джокович",
+                Stadium = "Разные",
+                Wins = 45,
+                Draws = 0,
+                Losses = 5,
+                GoalsFor = 90,
+                GoalsAgainst = 30,
+                Position = 9,
+                Colors = "#0C4076,#FFFFFF",
+                Image = "/images/teams/djokovic.png",
+                CategoryId = 4,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+
+            // ВОЛЕЙБОЛЬНЫЕ КОМАНДЫ (CategoryId = 5)
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Зенит (волейбол)",
+                Description = "Волейбольный клуб из Казани",
+                Points = 40,
+                Location = "Казань, Россия",
+                FoundedYear = 2000,
+                HeadCoach = "Алексей Вербов",
+                Captain = "Мэттью Андерсон",
+                Stadium = "Центр волейбола Санкт-Петербург",
+                Wins = 18,
+                Draws = 2,
+                Losses = 20,
+                GoalsFor = 60,
+                GoalsAgainst = 65,
+                Position = 10,
+                Colors = "#0000FF,#FFFFFF",
+                Image = "/images/teams/zenit.png",
+                CategoryId = 5,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+
+            // Добавим еще несколько команд для разнообразия
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Барселона (футбол)",
+                Description = "Испанский футбольный клуб",
+                Points = 75,
+                Location = "Барселона, Испания",
+                FoundedYear = 1899,
+                HeadCoach = "Хави",
+                Captain = "Серхио Бускетс",
+                Stadium = "Камп Ноу",
+                Wins = 24,
+                Draws = 3,
+                Losses = 11,
+                GoalsFor = 130,
+                GoalsAgainst = 70,
+                Position = 11,
+                Colors = "#A50044,#004D98",
+                Image = "/images/teams/zenit.png", // временно используем имеющееся
+                CategoryId = 2,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+
+            _teams.Add(new Team
+            {
+                Id = _nextId++,
+                Name = "Чикаго Буллз (баскетбол)",
+                Description = "Американский баскетбольный клуб",
+                Points = 45,
+                Location = "Чикаго, США",
+                FoundedYear = 1966,
+                HeadCoach = "Билли Донован",
+                Captain = "Демар Дерозан",
+                Stadium = "Юнайтед Центр",
+                Wins = 20,
+                Draws = 0,
+                Losses = 30,
+                GoalsFor = 105,
+                GoalsAgainst = 115,
+                Position = 12,
+                Colors = "#CE1141,#000000",
+                Image = "/images/teams/warriors.png", // временно используем имеющееся
+                CategoryId = 3,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+        }
+        
+
+        // Исправленный метод - возвращает Task<ServiceResponse<IEnumerable<Team>>>
+        public Task<ServiceResponse<IEnumerable<Team>>> GetTeamListAsync(string? category)
+        {
+            try
+            {
+                IEnumerable<Team> result = _teams;
+
+                if (!string.IsNullOrEmpty(category))
                 {
-                    Id = 8,
-                    Name = "Новак Джокович",
-                    Description = "Сербский теннисист, бывшая первая ракетка мира",
-                    Points = 9850,
-                    CategoryId = tennisCategory?.Id,
-                    Image = "/images/teams/djokovic.png",
-                    Location = "Белград, Сербия",
-                    FoundedYear = null,
-                    HeadCoach = "Горан Иванишевич",
-                    Captain = "",
-                    Stadium = "",
-                    Wins = 55,
-                    Losses = 7,
-                    Draws = 0,
-                    GoalsFor = 0,
-                    GoalsAgainst = 0,
-                    Position = 1,
-                    Colors = "Синий, белый"
+                    // Фильтрация по категории (если будет реализовано)
+                    result = result.Where(t =>
+                        t.Category != null &&
+                        t.Category.NormalizedName == category);
                 }
-            };
+
+                return Task.FromResult(ServiceResponse<IEnumerable<Team>>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ServiceResponse<IEnumerable<Team>>.Error(
+                    $"Ошибка при получении списка команд: {ex.Message}"));
+            }
         }
 
-        /// <summary>
-        /// Получение списка всех команд с фильтрацией по категории
-        /// </summary>
-        public Task<ResponseData<List<Team>>> GetTeamListAsync(string? category)
+        // Исправленный метод - возвращает Task<ServiceResponse<Team>>
+        public Task<ServiceResponse<Team>> GetTeamByIdAsync(int id)
         {
-            IEnumerable<Team> teams = _teams;
-
-            // Фильтрация по категории, если указана
-            if (!string.IsNullOrEmpty(category))
+            try
             {
-                // Находим категорию по нормализованному имени
-                var categoryObj = _categories.FirstOrDefault(c =>
-                    c.NormalizedName.Equals(category, StringComparison.OrdinalIgnoreCase));
+                var team = _teams.FirstOrDefault(t => t.Id == id);
 
-                if (categoryObj != null)
+                if (team == null)
                 {
-                    teams = teams.Where(t => t.CategoryId == categoryObj.Id);
+                    return Task.FromResult(ServiceResponse<Team>.Error(
+                        $"Команда с ID {id} не найдена"));
                 }
+
+                return Task.FromResult(ServiceResponse<Team>.Ok(team));
             }
-
-            // Сортировка по очкам (по убыванию)
-            teams = teams.OrderByDescending(t => t.Points)
-                        .ThenByDescending(t => t.GoalDifference);
-
-            var result = ResponseData<List<Team>>.Ok(teams.ToList());
-            return Task.FromResult(result);
-        }
-
-        /// <summary>
-        /// Поиск команды по Id
-        /// </summary>
-        public Task<ResponseData<Team>> GetTeamByIdAsync(int id)
-        {
-            var team = _teams.FirstOrDefault(t => t.Id == id);
-
-            if (team == null)
+            catch (Exception ex)
             {
-                return Task.FromResult(ResponseData<Team>.Error($"Команда с ID {id} не найдена"));
+                return Task.FromResult(ServiceResponse<Team>.Error(
+                    $"Ошибка при получении команды: {ex.Message}"));
             }
-
-            return Task.FromResult(ResponseData<Team>.Ok(team));
         }
 
-        /// <summary>
-        /// Обновление команды (заглушка - будет реализовано позже)
-        /// </summary>
-        public Task UpdateTeamAsync(int id, Team team, IFormFile? formFile)
+        // Остальные методы остаются без изменений
+        public Task<ServiceResponse<Team>> CreateTeamAsync(Team team)
         {
-            // Заглушка - в реальном приложении здесь будет логика обновления
-            return Task.CompletedTask;
+            try
+            {
+                team.Id = _nextId++;
+                team.CreatedAt = DateTime.UtcNow;
+                team.UpdatedAt = DateTime.UtcNow;
+
+                _teams.Add(team);
+
+                return Task.FromResult(ServiceResponse<Team>.Ok(team, "Команда успешно создана"));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ServiceResponse<Team>.Error(
+                    $"Ошибка при создании команды: {ex.Message}"));
+            }
         }
 
-        /// <summary>
-        /// Удаление команды (заглушка - будет реализовано позже)
-        /// </summary>
-        public Task DeleteTeamAsync(int id)
+        public Task<ServiceResponse<Team>> UpdateTeamAsync(int id, Team team)
         {
-            // Заглушка - в реальном приложении здесь будет логика удаления
-            return Task.CompletedTask;
+            try
+            {
+                var existingTeam = _teams.FirstOrDefault(t => t.Id == id);
+                if (existingTeam == null)
+                {
+                    return Task.FromResult(ServiceResponse<Team>.Error(
+                        $"Команда с ID {id} не найдена"));
+                }
+
+                // Обновляем свойства
+                existingTeam.Name = team.Name;
+                existingTeam.Description = team.Description;
+                existingTeam.Points = team.Points;
+                existingTeam.CategoryId = team.CategoryId;
+                existingTeam.Image = team.Image;
+                existingTeam.Location = team.Location;
+                existingTeam.FoundedYear = team.FoundedYear;
+                existingTeam.HeadCoach = team.HeadCoach;
+                existingTeam.Captain = team.Captain;
+                existingTeam.Stadium = team.Stadium;
+                existingTeam.Wins = team.Wins;
+                existingTeam.Draws = team.Draws;
+                existingTeam.Losses = team.Losses;
+                existingTeam.GoalsFor = team.GoalsFor;
+                existingTeam.GoalsAgainst = team.GoalsAgainst;
+                existingTeam.Position = team.Position;
+                existingTeam.Colors = team.Colors;
+                existingTeam.UpdatedAt = DateTime.UtcNow;
+
+                return Task.FromResult(ServiceResponse<Team>.Ok(
+                    existingTeam, "Команда успешно обновлена"));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ServiceResponse<Team>.Error(
+                    $"Ошибка при обновлении команды: {ex.Message}"));
+            }
         }
 
-        /// <summary>
-        /// Создание команды (заглушка - будет реализовано позже)
-        /// </summary>
-        public Task<ResponseData<Team>> CreateTeamAsync(Team team, IFormFile? formFile)
+        public Task<ServiceResponse<bool>> DeleteTeamAsync(int id)
         {
-            // Заглушка - в реальном приложении здесь будет логика создания
-            team.Id = _teams.Max(t => t.Id) + 1;
-            _teams.Add(team);
+            try
+            {
+                var team = _teams.FirstOrDefault(t => t.Id == id);
+                if (team == null)
+                {
+                    return Task.FromResult(ServiceResponse<bool>.Error(
+                        $"Команда с ID {id} не найдена"));
+                }
 
-            return Task.FromResult(ResponseData<Team>.Ok(team));
+                _teams.Remove(team);
+
+                return Task.FromResult(ServiceResponse<bool>.Ok(true, "Команда успешно удалена"));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ServiceResponse<bool>.Error(
+                    $"Ошибка при удалении команды: {ex.Message}"));
+            }
         }
     }
 }

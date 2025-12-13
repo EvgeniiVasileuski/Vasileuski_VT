@@ -1,0 +1,213 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@page
+@model Vasileuski.UI.Areas.Admin.Pages.Teams.EditModel
+@using Vasileuski.UI.Services
+@using Vasileuski.Domain.Entities
+@{
+    ViewData["Title"] = "Редактировать команду";
+}
+
+<h1>Редактировать команду</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Team.Id" />
+            <input type="hidden" asp-for="Team.CreatedAt" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Name" class="control-label">Название команды *</label>
+                        <input asp-for="Team.Name" class="form-control" />
+                        <span asp-validation-for="Team.Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Points" class="control-label">Очки *</label>
+                        <input asp-for="Team.Points" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="Team.Points" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Team.Description" class="control-label">Описание</label>
+                <textarea asp-for="Team.Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Team.Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Image" class="control-label">URL логотипа</label>
+                        <input asp-for="Team.Image" class="form-control" />
+                        <span asp-validation-for="Team.Image" class="text-danger"></span>
+                        @if (!string.IsNullOrEmpty(Model.Team.Image))
+                        {
+                            <div class="mt-2">
+                                <img src="@Model.Team.Image" alt="Текущий логотип"
+                                     style="max-width: 100px; max-height: 100px; object-fit: contain;" />
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.CategoryId" class="control-label">Категория</label>
+                        <select asp-for="Team.CategoryId" class="form-control" asp-items="Model.Categories">
+                            <option value="">-- Выберите категорию --</option>
+                        </select>
+                        <span asp-validation-for="Team.CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Location" class="control-label">Город/Страна</label>
+                        <input asp-for="Team.Location" class="form-control" />
+                        <span asp-validation-for="Team.Location" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.FoundedYear" class="control-label">Год основания</label>
+                        <input asp-for="Team.FoundedYear" class="form-control" type="number" min="1800" max="2100" />
+                        <span asp-validation-for="Team.FoundedYear" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.HeadCoach" class="control-label">Главный тренер</label>
+                        <input asp-for="Team.HeadCoach" class="form-control" />
+                        <span asp-validation-for="Team.HeadCoach" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Captain" class="control-label">Капитан</label>
+                        <input asp-for="Team.Captain" class="form-control" />
+                        <span asp-validation-for="Team.Captain" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Stadium" class="control-label">Стадион</label>
+                        <input asp-for="Team.Stadium" class="form-control" />
+                        <span asp-validation-for="Team.Stadium" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Position" class="control-label">Позиция в таблице</label>
+                        <input asp-for="Team.Position" class="form-control" type="number" min="1" />
+                        <span asp-validation-for="Team.Position" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Wins" class="control-label">Победы</label>
+                        <input asp-for="Team.Wins" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="Team.Wins" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Draws" class="control-label">Ничьи</label>
+                        <input asp-for="Team.Draws" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="Team.Draws" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.Losses" class="control-label">Поражения</label>
+                        <input asp-for="Team.Losses" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="Team.Losses" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.GoalsFor" class="control-label">Забитые голы</label>
+                        <input asp-for="Team.GoalsFor" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="Team.GoalsFor" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Team.GoalsAgainst" class="control-label">Пропущенные голы</label>
+                        <input asp-for="Team.GoalsAgainst" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="Team.GoalsAgainst" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Team.Colors" class="control-label">Цвета формы (через запятую)</label>
+                <input asp-for="Team.Colors" class="form-control" />
+                <span asp-validation-for="Team.Colors" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Сохранить изменения
+                </button>
+                <a asp-page="./Index" class="btn btn-secondary ms-2">
+                    <i class="fas fa-arrow-left"></i> Назад к списку
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Статистика команды</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Обновлено:</strong> @Model.Team.UpdatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                <p><strong>Создано:</strong> @Model.Team.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                <hr />
+                <p><strong>Разница голов:</strong> <span class="@(Model.Team.GoalDifference >= 0 ? "text-success" : "text-danger")">@(Model.Team.GoalDifference >= 0 ? "+" : "")@Model.Team.GoalDifference</span></p>
+                <p><strong>Всего игр:</strong> @(Model.Team.Wins + Model.Team.Draws + Model.Team.Losses)</p>
+                @{
+                    var totalGames = Model.Team.Wins + Model.Team.Draws + Model.Team.Losses;
+                    var winPercentage = totalGames > 0 ? (double)Model.Team.Wins / totalGames * 100 : 0;
+                }
+                <p><strong>Процент побед:</strong> @winPercentage.ToString("F1")%</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

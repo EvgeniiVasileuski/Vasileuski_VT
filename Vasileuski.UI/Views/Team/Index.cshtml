@@ -8,6 +8,9 @@
 
 @{
     ViewData["Title"] = "Спортивные команды";
+    var categories = ViewBag.Categories as IEnumerable<Category>;
+    var currentCategoryNormalized = ViewBag.CurrentCategory as string;
+    var currentCategoryName = ViewBag.CurrentCategoryName as string;
     var favoritesCount = Context.Session.Get<List<int>>("Favorites")?.Count ?? 0;
 }
 
@@ -16,13 +19,10 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="mb-1">Спортивные команды</h1>
-            <p class="text-muted mb-0">
-                <i class="fas fa-trophy"></i> Всего команд: <strong>@Model.Count()</strong>
-                @if (ViewBag.CurrentCategory != null)
-                {
-                    <span> • Категория: <strong>@ViewBag.CurrentCategory</strong></span>
-                }
-            </p>
+            @if (!string.IsNullOrEmpty(currentCategoryName))
+            {
+                <p class="text-muted mb-0">Категория: <strong>@currentCategoryName</strong></p>
+            }
         </div>
 
         <!-- Кнопки действий -->
@@ -49,52 +49,67 @@
         <div class="card-body">
             <div class="row g-3">
                 <!-- Фильтр по категориям -->
-                @if (ViewBag.Categories != null)
-                {
-                    <div class="col-md-6">
-                        <h6 class="mb-2">Фильтр по категориям</h6>
-                        <div class="btn-group flex-wrap" role="group">
-                            @{
-                                var categories = ViewBag.Categories as IEnumerable<Category>;
-                                var currentCategory = ViewBag.CurrentCategory as string;
-                            }
+                <div class="col-md-12">
+                    <h6 class="mb-2">Фильтр по категориям</h6>
+                    <div class="btn-group flex-wrap" role="group">
+                        <a asp-action="Index"
+                           asp-route-category=""
+                           class="btn @(string.IsNullOrEmpty(currentCategoryNormalized) ? "btn-primary" : "btn-outline-primary") mb-2">
+                            <i class="fas fa-globe"></i> Все команды
+                        </a>
 
-                            <a asp-action="Index"
-                               asp-route-category=""
-                               class="btn @(string.IsNullOrEmpty(currentCategory) ? "btn-primary" : "btn-outline-primary") mb-1">
-                                Все команды
-                            </a>
-
-                            @foreach (var cat in categories)
+                        @if (categories != null && categories.Any())
+                        {
+                            foreach (var category in categories)
                             {
                                 <a asp-action="Index"
-                                   asp-route-category="@cat.NormalizedName"
-                                   class="btn @(currentCategory == cat.NormalizedName ? "btn-primary" : "btn-outline-primary") mb-1 mx-1">
-                                    @cat.Name
+                                   asp-route-category="@category.NormalizedName"
+                                   class="btn @(currentCategoryNormalized == category.NormalizedName ? "btn-primary" : "btn-outline-primary") mb-2 mx-1">
+                                    @if (!string.IsNullOrEmpty(category.Image))
+                                    {
+                                        <img src="/@category.Image" alt="@category.Name" style="width: 20px; height: 20px; margin-right: 5px;" />
+                                    }
+                                    @category.Name
                                 </a>
                             }
+                        }
+                    </div>
+                </div>
+
+                <!-- Статистика -->
+                @if (Model.Any())
+                {
+                    <div class="col-md-12 mt-3">
+                        <h6 class="mb-2">Общая статистика</h6>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="text-center">
+                                <div class="fw-bold text-primary">@Model.Sum(t => t.Points)</div>
+                                <small class="text-muted">Всего очков</small>
+                            </div>
+                            <div class="text-center">
+                                <div class="fw-bold text-success">@Model.Sum(t => t.Wins)</div>
+                                <small class="text-muted">Всего побед</small>
+                            </div>
+                            <div class="text-center">
+                                <div class="fw-bold text-info">
+                                    @if (Model.Any())
+                                    {
+                                        @Model.Average(t => t.Points).ToString("F1")
+                                    }
+                                    else
+                                    {
+                                        <text>0</text>
+                                    }
+                                </div>
+                                <small class="text-muted">Среднее очков</small>
+                            </div>
+                            <div class="text-center">
+                                <div class="fw-bold text-warning">@Model.Count()</div>
+                                <small class="text-muted">Команд</small>
+                            </div>
                         </div>
                     </div>
                 }
-
-                <!-- Статистика -->
-                <div class="col-md-6">
-                    <h6 class="mb-2">Общая статистика</h6>
-                    <div class="d-flex flex-wrap gap-3">
-                        <div class="text-center">
-                            <div class="fw-bold text-primary">@Model.Sum(t => t.Points)</div>
-                            <small class="text-muted">Всего очков</small>
-                        </div>
-                        <div class="text-center">
-                            <div class="fw-bold text-success">@Model.Sum(t => t.Wins)</div>
-                            <small class="text-muted">Всего побед</small>
-                        </div>
-                        <div class="text-center">
-                            <div class="fw-bold text-info">@Model.Average(t => t.Position).ToString("F1")</div>
-                            <small class="text-muted">Средняя позиция</small>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -120,8 +135,11 @@
                             <h5 class="text-success">
                                 <i class="fas fa-crown"></i> Лидер
                             </h5>
-                            <h4>@Model.OrderBy(t => t.Position).First().Name</h4>
-                            <small class="text-muted">@Model.OrderBy(t => t.Position).First().Points очков</small>
+                            @{
+                                var leader = Model.OrderBy(t => t.Position).First();
+                            }
+                            <h4>@leader.Name</h4>
+                            <small class="text-muted">@leader.Points очков</small>
                         </div>
                     </div>
                 </div>
@@ -131,8 +149,11 @@
                             <h5 class="text-primary">
                                 <i class="fas fa-futbol"></i> Лучшая атака
                             </h5>
-                            <h4>@Model.OrderByDescending(t => t.GoalsFor).First().Name</h4>
-                            <small class="text-muted">@Model.OrderByDescending(t => t.GoalsFor).First().GoalsFor голов</small>
+                            @{
+                                var bestAttack = Model.OrderByDescending(t => t.GoalsFor).First();
+                            }
+                            <h4>@bestAttack.Name</h4>
+                            <small class="text-muted">@bestAttack.GoalsFor голов</small>
                         </div>
                     </div>
                 </div>
@@ -142,8 +163,11 @@
                             <h5 class="text-info">
                                 <i class="fas fa-shield-alt"></i> Лучшая защита
                             </h5>
-                            <h4>@Model.OrderBy(t => t.GoalsAgainst).First().Name</h4>
-                            <small class="text-muted">@Model.OrderBy(t => t.GoalsAgainst).First().GoalsAgainst пропущено</small>
+                            @{
+                                var bestDefense = Model.OrderBy(t => t.GoalsAgainst).First();
+                            }
+                            <h4>@bestDefense.Name</h4>
+                            <small class="text-muted">@bestDefense.GoalsAgainst пропущено</small>
                         </div>
                     </div>
                 </div>
@@ -164,38 +188,3 @@
         </div>
     }
 </div>
-
-@section Scripts {
-    <script>
-        function addToFavorites(teamId, teamName) {
-            fetch('/Favorites/AddToFavorites', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({ teamId: teamId })
-            })
-            .then(response => {
-                if (response.ok) {
-                    showToast(`Команда "${teamName}" добавлена в избранное!`, 'success');
-                    updateFavoritesCount();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('Произошла ошибка при добавлении в избранное', 'error');
-            });
-        }
-
-        function showToast(message, type) {
-            // Реализация toast уведомлений
-            alert(message); // Временное решение
-        }
-
-        function updateFavoritesCount() {
-            // Обновление счетчика избранного
-            location.reload();
-        }
-    </script>
-}
