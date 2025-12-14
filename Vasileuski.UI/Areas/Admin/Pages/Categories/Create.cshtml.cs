@@ -4,19 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Vasileuski.UI.Services;
 using Vasileuski.Domain.Entities;
-using Vasileuski.UI.Data;
 
 namespace Vasileuski.UI.Areas.Admin.Pages.Categories
 {
     public class CreateModel : PageModel
     {
-        private readonly Vasileuski.UI.Data.AdminDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public CreateModel(Vasileuski.UI.Data.AdminDbContext context)
+        public CreateModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         public IActionResult OnGet()
@@ -27,7 +26,9 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Categories
         [BindProperty]
         public Category Category { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
+        [BindProperty]
+        public IFormFile? ImageFile { get; set; }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -35,8 +36,12 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Categories
                 return Page();
             }
 
-            _context.Categories.Add(Category);
-            await _context.SaveChangesAsync();
+            var result = await _categoryService.CreateCategoryAsync(Category, ImageFile);
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.ErrorMessage ?? "Ошибка при создании категории");
+                return Page();
+            }
 
             return RedirectToPage("./Index");
         }

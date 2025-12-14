@@ -30,21 +30,25 @@ namespace Vasileuski.UI.Services
         /// <param name="team">Команда с новыми параметрами</param>
         /// <param name="formFile">Файл изображения</param>
         /// <returns></returns>
-        public Task UpdateTeamAsync(int id, Team team, IFormFile? formFile);
+        //public Task UpdateTeamAsync(int id, Team team, IFormFile? formFile);
 
-        /// <summary>
-        /// Удаление команды
-        /// </summary>
-        /// <param name="id">Id удаляемой команды</param>
-        /// <returns></returns>
-        public Task DeleteTeamAsync(int id);
+        ///// <summary>
+        ///// Удаление команды
+        ///// </summary>
+        ///// <param name="id">Id удаляемой команды</param>
+        ///// <returns></returns>
+        ////public Task DeleteTeamAsync(int id);
 
-        /// <summary>
-        /// Создание команды
-        /// </summary>
-        /// <param name="team">Новая команда</param>
-        /// <param name="formFile">Файл изображения</param>
-        /// <returns>Созданную команду</returns>
-        public Task<ResponseData<Team>> CreateTeamAsync(Team team, IFormFile? formFile);
+        ///// <summary>
+        ///// Создание команды
+        ///// </summary>
+        ///// <param name="team">Новая команда</param>
+        ///// <param name="formFile">Файл изображения</param>
+        ///// <returns>Созданную команду</returns>
+        //public Task<ResponseData<Team>> CreateTeamAsync(Team team, IFormFile? formFile);
+
+        Task UpdateTeamAsync(int id, Team team, IFormFile? formFile);
+        Task DeleteTeamAsync(int id);
+        Task<ResponseData<Team>> CreateTeamAsync(Team team, IFormFile? formFile);
     }
 }

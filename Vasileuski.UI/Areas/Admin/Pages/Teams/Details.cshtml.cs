@@ -4,19 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Vasileuski.UI.Services;
 using Vasileuski.Domain.Entities;
-using Vasileuski.UI.Data;
 
 namespace Vasileuski.UI.Areas.Admin.Pages.Teams
 {
     public class DetailsModel : PageModel
     {
-        private readonly AdminDbContext _context;
+        private readonly ITeamService _teamService;
 
-        public DetailsModel(AdminDbContext context)
+        public DetailsModel(ITeamService teamService)
         {
-            _context = context;
+            _teamService = teamService;
         }
 
         public Team Team { get; set; } = default!;
@@ -28,15 +27,13 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Teams
                 return NotFound();
             }
 
-            var team = await _context.Teams.FirstOrDefaultAsync(m => m.Id == id);
-            if (team == null)
+            var response = await _teamService.GetTeamByIdAsync(id.Value);
+            if (!response.Success || response.Data == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Team = team;
-            }
+
+            Team = response.Data;
             return Page();
         }
     }

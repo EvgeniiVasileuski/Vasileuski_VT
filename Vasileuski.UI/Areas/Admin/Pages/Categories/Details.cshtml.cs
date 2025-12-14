@@ -4,19 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Vasileuski.UI.Services;
 using Vasileuski.Domain.Entities;
-using Vasileuski.UI.Data;
 
 namespace Vasileuski.UI.Areas.Admin.Pages.Categories
 {
     public class DetailsModel : PageModel
     {
-        private readonly Vasileuski.UI.Data.AdminDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public DetailsModel(Vasileuski.UI.Data.AdminDbContext context)
+        public DetailsModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         public Category Category { get; set; } = default!;
@@ -28,15 +27,13 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Categories
                 return NotFound();
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            var response = await _categoryService.GetCategoryByIdAsync(id.Value);
+            if (!response.Success || response.Data == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Category = category;
-            }
+
+            Category = response.Data;
             return Page();
         }
     }

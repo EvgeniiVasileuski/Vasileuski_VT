@@ -28,7 +28,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
     options.Cookie.Name = ".Vasileuski.Session";
 });
-
+builder.Services.AddSingleton<IWebHostEnvironment>(provider =>
+    provider.GetRequiredService<IWebHostEnvironment>());
 
 var app = builder.Build();
 

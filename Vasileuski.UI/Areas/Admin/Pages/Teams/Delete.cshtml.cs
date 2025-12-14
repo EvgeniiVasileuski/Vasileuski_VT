@@ -4,19 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Vasileuski.UI.Services;
 using Vasileuski.Domain.Entities;
-using Vasileuski.UI.Data;
 
 namespace Vasileuski.UI.Areas.Admin.Pages.Teams
 {
     public class DeleteModel : PageModel
     {
-        private readonly AdminDbContext _context;
+        private readonly ITeamService _teamService;
 
-        public DeleteModel(AdminDbContext context)
+        public DeleteModel(ITeamService teamService)
         {
-            _context = context;
+            _teamService = teamService;
         }
 
         [BindProperty]
@@ -29,16 +28,13 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Teams
                 return NotFound();
             }
 
-            var team = await _context.Teams.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (team == null)
+            var response = await _teamService.GetTeamByIdAsync(id.Value);
+            if (!response.Success || response.Data == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Team = team;
-            }
+
+            Team = response.Data;
             return Page();
         }
 
@@ -49,14 +45,7 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Teams
                 return NotFound();
             }
 
-            var team = await _context.Teams.FindAsync(id);
-            if (team != null)
-            {
-                Team = team;
-                _context.Teams.Remove(Team);
-                await _context.SaveChangesAsync();
-            }
-
+            await _teamService.DeleteTeamAsync(id.Value);
             return RedirectToPage("./Index");
         }
     }

@@ -4,19 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Vasileuski.UI.Services;
 using Vasileuski.Domain.Entities;
-using Vasileuski.UI.Data;
 
 namespace Vasileuski.UI.Areas.Admin.Pages.Categories
 {
     public class DeleteModel : PageModel
     {
-        private readonly Vasileuski.UI.Data.AdminDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public DeleteModel(Vasileuski.UI.Data.AdminDbContext context)
+        public DeleteModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         [BindProperty]
@@ -29,16 +28,13 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Categories
                 return NotFound();
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (category == null)
+            var response = await _categoryService.GetCategoryByIdAsync(id.Value);
+            if (!response.Success || response.Data == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Category = category;
-            }
+
+            Category = response.Data;
             return Page();
         }
 
@@ -49,12 +45,11 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Categories
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var result = await _categoryService.DeleteCategoryAsync(id.Value);
+            if (!result.Success)
             {
-                Category = category;
-                _context.Categories.Remove(Category);
-                await _context.SaveChangesAsync();
+                ModelState.AddModelError("", result.ErrorMessage ?? "Ошибка при удалении категории");
+                return Page();
             }
 
             return RedirectToPage("./Index");

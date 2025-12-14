@@ -4,24 +4,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using Vasileuski.UI.Services;
 using Vasileuski.Domain.Entities;
-using Vasileuski.UI.Data;
 
 namespace Vasileuski.UI.Areas.Admin.Pages.Categories
 {
     public class EditModel : PageModel
     {
-        private readonly Vasileuski.UI.Data.AdminDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public EditModel(Vasileuski.UI.Data.AdminDbContext context)
+        public EditModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         [BindProperty]
         public Category Category { get; set; } = default!;
+
+        [BindProperty]
+        public IFormFile? ImageFile { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,17 +31,16 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Categories
                 return NotFound();
             }
 
-            var category =  await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            var response = await _categoryService.GetCategoryByIdAsync(id.Value);
+            if (!response.Success || response.Data == null)
             {
                 return NotFound();
             }
-            Category = category;
+
+            Category = response.Data;
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -48,30 +48,14 @@ namespace Vasileuski.UI.Areas.Admin.Pages.Categories
                 return Page();
             }
 
-            _context.Attach(Category).State = EntityState.Modified;
-
-            try
+            var result = await _categoryService.UpdateCategoryAsync(Category.Id, Category, ImageFile);
+            if (!result.Success)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(Category.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                ModelState.AddModelError("", result.ErrorMessage ?? "Ошибка при обновлении категории");
+                return Page();
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.Id == id);
         }
     }
 }

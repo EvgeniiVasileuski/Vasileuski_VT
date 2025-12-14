@@ -11,10 +11,12 @@ namespace Vasileuski.UI.Services
     {
         private List<Team> _teams;
         private List<Category> _categories;
+        private readonly IWebHostEnvironment _environment;
 
-        public MemoryTeamService(ICategoryService categoryService)
+        public MemoryTeamService(ICategoryService categoryService, IWebHostEnvironment environment)
         {
             // Получаем категории через сервис категорий
+            _environment = environment;
             _categories = categoryService.GetCategoryListAsync()
                 .Result
                 .Data ?? new List<Category>();
@@ -259,31 +261,116 @@ namespace Vasileuski.UI.Services
         /// <summary>
         /// Обновление команды (заглушка - будет реализовано позже)
         /// </summary>
-        public Task UpdateTeamAsync(int id, Team team, IFormFile? formFile)
+        //public Task UpdateTeamAsync(int id, Team team, IFormFile? formFile)
+        //{
+        //    // Заглушка - в реальном приложении здесь будет логика обновления
+        //    return Task.CompletedTask;
+        //}
+
+        ///// <summary>
+        ///// Удаление команды (заглушка - будет реализовано позже)
+        ///// </summary>
+        //public Task DeleteTeamAsync(int id)
+        //{
+        //    // Заглушка - в реальном приложении здесь будет логика удаления
+        //    return Task.CompletedTask;
+        //}
+
+        ///// <summary>
+        ///// Создание команды (заглушка - будет реализовано позже)
+        ///// </summary>
+        //public Task<ResponseData<Team>> CreateTeamAsync(Team team, IFormFile? formFile)
+        //{
+        //    // Заглушка - в реальном приложении здесь будет логика создания
+        //    team.Id = _teams.Max(t => t.Id) + 1;
+        //    _teams.Add(team);
+
+        //    return Task.FromResult(ResponseData<Team>.Ok(team));
+        //}
+        public async Task UpdateTeamAsync(int id, Team team, IFormFile? formFile)
         {
-            // Заглушка - в реальном приложении здесь будет логика обновления
-            return Task.CompletedTask;
+            var existingTeam = _teams.FirstOrDefault(t => t.Id == id);
+            if (existingTeam != null)
+            {
+                // Сохраняем файл, если он загружен
+                if (formFile != null && formFile.Length > 0)
+                {
+                    var fileName = await SaveImageAsync(formFile);
+                    existingTeam.Image = $"/images/teams/{fileName}";
+                }
+
+                // Обновляем свойства
+                existingTeam.Name = team.Name;
+                existingTeam.Description = team.Description;
+                existingTeam.Points = team.Points;
+                existingTeam.CategoryId = team.CategoryId;
+                existingTeam.Location = team.Location;
+                existingTeam.FoundedYear = team.FoundedYear;
+                existingTeam.HeadCoach = team.HeadCoach;
+                existingTeam.Captain = team.Captain;
+                existingTeam.Stadium = team.Stadium;
+                existingTeam.Wins = team.Wins;
+                existingTeam.Losses = team.Losses;
+                existingTeam.Draws = team.Draws;
+                existingTeam.GoalsFor = team.GoalsFor;
+                existingTeam.GoalsAgainst = team.GoalsAgainst;
+                existingTeam.Position = team.Position;
+                existingTeam.Colors = team.Colors;
+                existingTeam.UpdatedAt = DateTime.UtcNow;
+            }
         }
 
-        /// <summary>
-        /// Удаление команды (заглушка - будет реализовано позже)
-        /// </summary>
         public Task DeleteTeamAsync(int id)
         {
-            // Заглушка - в реальном приложении здесь будет логика удаления
+            var team = _teams.FirstOrDefault(t => t.Id == id);
+            if (team != null)
+            {
+                _teams.Remove(team);
+            }
             return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Создание команды (заглушка - будет реализовано позже)
-        /// </summary>
-        public Task<ResponseData<Team>> CreateTeamAsync(Team team, IFormFile? formFile)
+        public async Task<ResponseData<Team>> CreateTeamAsync(Team team, IFormFile? formFile)
         {
-            // Заглушка - в реальном приложении здесь будет логика создания
-            team.Id = _teams.Max(t => t.Id) + 1;
-            _teams.Add(team);
+            // Валидация
+            if (string.IsNullOrWhiteSpace(team.Name))
+                return ResponseData<Team>.Error("Название команды обязательно");
 
-            return Task.FromResult(ResponseData<Team>.Ok(team));
+            // Сохраняем изображение
+            if (formFile != null && formFile.Length > 0)
+            {
+                var fileName = await SaveImageAsync(formFile);
+                team.Image = $"/images/teams/{fileName}";
+            }
+
+            // Генерируем новый ID
+            team.Id = _teams.Any() ? _teams.Max(t => t.Id) + 1 : 1;
+
+            // Устанавливаем временные метки
+            team.CreatedAt = DateTime.UtcNow;
+            team.UpdatedAt = DateTime.UtcNow;
+
+            _teams.Add(team);
+            return ResponseData<Team>.Ok(team, "Команда успешно создана");
+        }
+
+        private async Task<string> SaveImageAsync(IFormFile file)
+        {
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "teams");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return uniqueFileName;
         }
     }
 }

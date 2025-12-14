@@ -4,26 +4,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Vasileuski.UI.Services;
 using Vasileuski.Domain.Entities;
-using Vasileuski.UI.Data;
 
 namespace Vasileuski.UI.Areas.Admin.Pages.Categories
 {
     public class IndexModel : PageModel
     {
-        private readonly Vasileuski.UI.Data.AdminDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public IndexModel(Vasileuski.UI.Data.AdminDbContext context)
+        public IndexModel(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
-        public IList<Category> Category { get;set; } = default!;
+        public IList<Category> Category { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            Category = await _context.Categories.ToListAsync();
+            var response = await _categoryService.GetCategoryListAsync();
+            if (response.Success)
+            {
+                Category = response.Data ?? new List<Category>();
+            }
         }
     }
 }

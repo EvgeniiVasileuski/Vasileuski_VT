@@ -1,15 +1,17 @@
 ﻿@page
 @model Vasileuski.UI.Areas.Admin.Pages.Teams.IndexModel
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Управление командами";
 }
 
-<h1>Index</h1>
+<h1>Управление командами</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Создать новую команду
+    </a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -17,128 +19,54 @@
                 @Html.DisplayNameFor(model => model.Team[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Team[0].Description)
+                @Html.DisplayNameFor(model => model.Team[0].Category)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Team[0].Points)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Team[0].Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].FoundedYear)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].HeadCoach)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].Captain)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].Stadium)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].Wins)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].Losses)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].Draws)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].GoalsFor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].GoalsAgainst)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Team[0].Position)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Team[0].Colors)
+                Изображение
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team[0].UpdatedAt)
-            </th>
-            <th></th>
+            <th>Действия</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Team) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Points)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FoundedYear)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HeadCoach)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Captain)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stadium)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Wins)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Losses)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Draws)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GoalsFor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GoalsAgainst)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Position)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Colors)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedAt)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Team)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Points)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Position)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <img src="@item.Image" alt="@item.Name" style="max-height: 50px; max-width: 50px;" />
+                    }
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                    <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
