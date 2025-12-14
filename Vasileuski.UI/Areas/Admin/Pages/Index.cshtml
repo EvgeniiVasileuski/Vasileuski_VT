@@ -1,0 +1,138 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@page
+@model Vasileuski.UI.Areas.Admin.Pages.IndexModel
+@{
+    ViewData["Title"] = "Панель управления";
+    ViewData["ActivePage"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">
+                <i class="fas fa-tachometer-alt"></i> Панель управления
+            </h1>
+
+            <!-- Информационные карточки -->
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-primary">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <i class="fas fa-users fa-2x text-primary mb-2"></i><br>
+                                Команды
+                            </h5>
+                            <p class="card-text">
+                                Управление спортивными командами
+                            </p>
+                            <a asp-area="Admin" asp-page="/Teams/Index"
+                               class="btn btn-primary">
+                                <i class="fas fa-list"></i> Просмотреть все
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <i class="fas fa-tags fa-2x text-success mb-2"></i><br>
+                                Категории
+                            </h5>
+                            <p class="card-text">
+                                Управление категориями и лигами
+                            </p>
+                            <a asp-area="Admin" asp-page="/Categories/Index"
+                               class="btn btn-success">
+                                <i class="fas fa-list"></i> Просмотреть все
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card border-info">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <i class="fas fa-chart-bar fa-2x text-info mb-2"></i><br>
+                                Статистика
+                            </h5>
+                            <p class="card-text">
+                                Аналитика и отчеты
+                            </p>
+                            <a asp-area="" asp-controller="Team" asp-action="Statistics"
+                               class="btn btn-info">
+                                <i class="fas fa-chart-line"></i> Перейти
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Быстрые действия -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt"></i> Быстрые действия</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a asp-area="Admin" asp-page="/Teams/Create" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-plus-circle"></i> Добавить новую команду
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a asp-area="Admin" asp-page="/Categories/Create" class="btn btn-outline-success w-100">
+                                <i class="fas fa-plus-circle"></i> Добавить новую категорию
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Навигация -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-sitemap"></i> Навигация по панели</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Управление командами:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <a asp-area="Admin" asp-page="/Teams/Index" class="text-decoration-none">
+                                        <i class="fas fa-list text-primary"></i> Список команд
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a asp-area="Admin" asp-page="/Teams/Create" class="text-decoration-none">
+                                        <i class="fas fa-plus text-success"></i> Создать команду
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Управление категориями:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <a asp-area="Admin" asp-page="/Categories/Index" class="text-decoration-none">
+                                        <i class="fas fa-list text-primary"></i> Список категорий
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a asp-area="Admin" asp-page="/Categories/Create" class="text-decoration-none">
+                                        <i class="fas fa-plus text-success"></i> Создать категорию
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
