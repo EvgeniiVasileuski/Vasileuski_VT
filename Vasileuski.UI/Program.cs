@@ -74,6 +74,10 @@ using Vasileuski.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 // ƒобавление сервисов в контейнер
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -138,7 +142,7 @@ else
 }
 
 // ѕринудительно используем HTTP дл€ тестировани€
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
@@ -164,5 +168,25 @@ app.MapControllerRoute(
 
 // Health check endpoint
 app.MapGet("/health", () => "Server is running");
+
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+        Console.WriteLine($"StackTrace: {ex.StackTrace}");
+        throw;
+    }
+});
+
+Console.WriteLine("Application starting at: " + DateTime.Now);
+Console.WriteLine("Environment: " + app.Environment.EnvironmentName);
+
+//app.Urls.Add("http://localhost:7001");
+//app.Urls.Add("https://localhost:5001");
 
 app.Run();
