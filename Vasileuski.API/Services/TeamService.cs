@@ -8,10 +8,10 @@ namespace Vasileuski.API.Services
 {
     public class TeamService : ITeamService
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _environment;
 
-        public TeamService(ApiDbContext context, IWebHostEnvironment environment)
+        public TeamService(AppDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;

@@ -3,39 +3,29 @@
     "Vasileuski.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false, // Закомментировано или false
-      "applicationUrl": "http://localhost:7002;https://localhost:5002",
+      "launchBrowser": true,
+      "launchUrl": "api-docs", // Автоматически открывать Swagger
+      "applicationUrl": "http://localhost:5002;https://localhost:7002",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5002;https://localhost:7002"
       }
     },
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": false,
-      "launchUrl": "swagger",
+      "launchBrowser": true,
+      "launchUrl": "api-docs",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "Docker": {
       "commandName": "Docker",
-      "launchBrowser": false,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "7002",
-        "ASPNETCORE_HTTPS_PORTS": "5002"
-      },
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api-docs",
       "publishAllPorts": true,
       "useSSL": true
     }
   },
-  "$schema": "https://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:51337",
-      "sslPort": 44394
-    }
-  }
+  "$schema": "https://json.schemastore.org/launchsettings.json"
 }

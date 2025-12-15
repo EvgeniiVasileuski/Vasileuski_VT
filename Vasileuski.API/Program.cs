@@ -18,8 +18,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Настройка базы данных
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// РЕГИСТРАЦИЯ КОНТЕКСТА БАЗЫ ДАННЫХ
+var connectionString = builder.Configuration.GetConnectionString("Default")
+    ?? throw new InvalidOperationException("Connection string 'Default' not found.");
 
 builder.Services.AddDbContext<ApiDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -44,6 +45,19 @@ builder.Services.AddSingleton<IWebHostEnvironment>(builder.Environment);
 
 var app = builder.Build();
 
+
+// Создание базы данных при запуске (если не существует)
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    // Выполнение миграций
+    await context.Database.MigrateAsync();
+
+
+    // Заполнение базы начальными данными
+    await DbInitializer.SeedData(app);
+}
 // Настройка конвейера HTTP-запросов
 if (app.Environment.IsDevelopment())
 {
@@ -55,18 +69,12 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "api-docs";
     });
 }
-
 app.UseHttpsRedirection();
 app.UseStaticFiles(); // Для обслуживания изображений из wwwroot
 app.UseCors("AllowUI");
 app.UseAuthorization();
 app.MapControllers();
 
-// Создание базы данных при запуске (если не существует)
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
-    dbContext.Database.EnsureCreated();
-}
+
 
 app.Run();

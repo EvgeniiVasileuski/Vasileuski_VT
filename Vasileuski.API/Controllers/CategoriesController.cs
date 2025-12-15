@@ -11,10 +11,10 @@ namespace Vasileuski.API.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _environment;
 
-        public CategoriesController(ApiDbContext context, IWebHostEnvironment environment)
+        public CategoriesController(AppDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;
