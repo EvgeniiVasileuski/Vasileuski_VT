@@ -90,7 +90,9 @@
                             <small class="text-muted">Всего побед</small>
                         </div>
                         <div class="text-center">
-                            <div class="fw-bold text-info">@Model.Average(t => t.Position).ToString("F1")</div>
+                            <div class="fw-bold text-info">
+                                @(Model.Any() ? Model.Average(t => t.Position).ToString("F1") : "0.0")
+                            </div>
                             <small class="text-muted">Средняя позиция</small>
                         </div>
                     </div>
@@ -112,43 +114,46 @@
         </div>
 
         <!-- Сводная информация -->
-        <div class="mt-4 pt-3 border-top">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card border-0 bg-light">
-                        <div class="card-body text-center">
-                            <h5 class="text-success">
-                                <i class="fas fa-crown"></i> Лидер
-                            </h5>
-                            <h4>@Model.OrderBy(t => t.Position).First().Name</h4>
-                            <small class="text-muted">@Model.OrderBy(t => t.Position).First().Points очков</small>
+        @if (Model.Any())
+        {
+            <div class="mt-4 pt-3 border-top">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="text-success">
+                                    <i class="fas fa-crown"></i> Лидер
+                                </h5>
+                                <h4>@Model.OrderBy(t => t.Position).First().Name</h4>
+                                <small class="text-muted">@Model.OrderBy(t => t.Position).First().Points очков</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-0 bg-light">
-                        <div class="card-body text-center">
-                            <h5 class="text-primary">
-                                <i class="fas fa-futbol"></i> Лучшая атака
-                            </h5>
-                            <h4>@Model.OrderByDescending(t => t.GoalsFor).First().Name</h4>
-                            <small class="text-muted">@Model.OrderByDescending(t => t.GoalsFor).First().GoalsFor голов</small>
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="text-primary">
+                                    <i class="fas fa-futbol"></i> Лучшая атака
+                                </h5>
+                                <h4>@Model.OrderByDescending(t => t.GoalsFor).First().Name</h4>
+                                <small class="text-muted">@Model.OrderByDescending(t => t.GoalsFor).First().GoalsFor голов</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-0 bg-light">
-                        <div class="card-body text-center">
-                            <h5 class="text-info">
-                                <i class="fas fa-shield-alt"></i> Лучшая защита
-                            </h5>
-                            <h4>@Model.OrderBy(t => t.GoalsAgainst).First().Name</h4>
-                            <small class="text-muted">@Model.OrderBy(t => t.GoalsAgainst).First().GoalsAgainst пропущено</small>
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="text-info">
+                                    <i class="fas fa-shield-alt"></i> Лучшая защита
+                                </h5>
+                                <h4>@Model.OrderBy(t => t.GoalsAgainst).First().Name</h4>
+                                <small class="text-muted">@Model.OrderBy(t => t.GoalsAgainst).First().GoalsAgainst пропущено</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
     }
     else
     {

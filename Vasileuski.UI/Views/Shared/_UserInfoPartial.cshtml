@@ -1,34 +1,92 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@using Vasileuski.UI.Data  <!-- Добавьте эту строку -->
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
     var user = await UserManager.GetUserAsync(User);
     var email = user?.Email;
+    var displayName = user?.GetDisplayName() ?? email;
+    var initials = user?.GetInitials() ?? "U";
 
     <div class="dropdown ms-auto nav-color">
-        <button class="btn btn-secondary dropdown-toggle"
+        <button class="btn btn-secondary dropdown-toggle d-flex align-items-center"
                 type="button" id="dropdownMenuButton"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-            @email
-            <img src="~/Images/7.jpg" width="30"
-                 alt="User" class="rounded nav-color" />
+            @if (user?.Avatar != null)
+            {
+                <img src="data:image/jpeg;base64,@Convert.ToBase64String(user.Avatar)"
+                     alt="@displayName"
+                     class="rounded me-2"
+                     style="width: 30px; height: 30px; object-fit: cover;" />
+            }
+            else if (user?.FullName != null && user.Avatar == null)
+            {
+                <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-2"
+                     style="width: 30px; height: 30px; font-size: 12px; font-weight: bold;">
+                    @initials
+                </div>
+            }
+            else
+            {
+                <img src="~/Images/7.jpg" width="30"
+                     alt="User" class="rounded me-2" />
+            }
+
+            <span class="d-none d-md-inline">@displayName</span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <li>
                 <span class="dropdown-item-text">
-                    <img src="~/Images/7.jpg"
-                         width="50" alt="User" class="rounded" />
-                    @email
+                    <div class="d-flex align-items-center">
+                        @if (user?.Avatar != null)
+                        {
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(user.Avatar)"
+                                 alt="@displayName"
+                                 class="rounded me-3"
+                                 style="width: 50px; height: 50px; object-fit: cover;" />
+                        }
+                        else if (user?.FullName != null && user.Avatar == null)
+                        {
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                                 style="width: 50px; height: 50px; font-size: 18px; font-weight: bold;">
+                                @initials
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="~/Images/7.jpg"
+                                 width="50" alt="User" class="rounded me-3" />
+                        }
+                        <div>
+                            <strong>@displayName</strong><br />
+                            <small class="text-muted">@email</small>
+                        </div>
+                    </div>
                 </span>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="fas fa-user-cog"></i> Настройки профиля
+                </a>
+            </li>
+            @if (user?.Points > 0)
+            {
+                <li>
+                    <span class="dropdown-item">
+                        <i class="fas fa-star text-warning"></i>
+                        Очки: @user.Points | Уровень: @user.Level
+                    </span>
+                </li>
+            }
+            <li><hr class="dropdown-divider"></li>
+            <li>
                 <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" method="post">
                     <button id="logout" type="submit" class="nav-link btn btn-link text-dark">
-                        Logout
+                        <i class="fas fa-sign-out-alt"></i> Выйти
                     </button>
                 </form>
             </li>
@@ -39,10 +97,14 @@ else
 {
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">
+                <i class="fas fa-user-plus"></i> Регистрация
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">
+                <i class="fas fa-sign-in-alt"></i> Вход
+            </a>
         </li>
     </ul>
 }

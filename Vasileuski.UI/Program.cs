@@ -197,15 +197,53 @@ using Vasileuski.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//База данных
+var identityConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(identityConnectionString));
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Настройка контекста базы данных для приложения (AdminDbContext)
+var adminConnectionString = builder.Configuration.GetConnectionString("AdminConnection")
+    ?? throw new InvalidOperationException("Connection string 'AdminConnection' not found.");
+
+builder.Services.AddDbContext<AdminDbContext>(options =>
+    options.UseSqlServer(adminConnectionString));
+
+
+
 // Сервисы
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+//builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+//{
+//    options.SignIn.RequireConfirmedAccount = false;
+//})
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
+
+    // Настройки пароля (опционально)
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+
+    // Настройки пользователя
+    options.User.RequireUniqueEmail = true;
+
+    // Настройки блокировки
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
 })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -213,8 +251,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 // Ваши сервисы
-builder.Services.AddScoped<ICategoryService, MemoryCategoryService>();
-builder.Services.AddScoped<ITeamService, MemoryTeamService>();
+//builder.Services.AddScoped<ICategoryService, MemoryCategoryService>();
+//builder.Services.AddScoped<ITeamService, MemoryTeamService>();
+builder.Services.AddScoped<ICategoryService, DbCategoryService>();
+builder.Services.AddScoped<ITeamService, DbTeamService>();
 builder.Services.AddSingleton<IWebHostEnvironment>(builder.Environment);
 
 // Session
@@ -238,7 +278,7 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
+builder.Services.AddHttpContextAccessor();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
