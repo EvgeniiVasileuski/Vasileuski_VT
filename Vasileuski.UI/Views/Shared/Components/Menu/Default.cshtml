@@ -49,44 +49,6 @@
         </a>
     </li>
 
-    <!-- Административная панель -->
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-dark @(area == "admin" ? "active" : "")"
-           href="#"
-           id="adminDropdown"
-           role="button"
-           data-bs-toggle="dropdown"
-           aria-expanded="false">
-            <i class="fas fa-cogs"></i> Администрирование
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-            <!-- Главная страница админки -->
-            <li>
-                <a class="dropdown-item @(area == "admin" && string.IsNullOrEmpty(page) ? "active" : "")"
-                   asp-area="Admin"
-                   asp-page="/Index">
-                    <i class="fas fa-tachometer-alt"></i> Панель управления
-                </a>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-
-            <!-- Управление командами -->
-            <li>
-                <a class="dropdown-item @(area == "admin" && (page?.Contains("teams") == true || page == "teams/index") ? "active" : "")"
-                   asp-area="Admin"
-                   asp-page="/Teams/Index">
-                    <i class="fas fa-users"></i> Команды
-                </a>
-            </li>
-
-            <!-- Управление категориями -->
-            <li>
-                <a class="dropdown-item @(area == "admin" && (page?.Contains("categories") == true || page == "categories/index") ? "active" : "")"
-                   asp-area="Admin"
-                   asp-page="/Categories/Index">
-                    <i class="fas fa-tags"></i> Категории
-                </a>
-            </li>
-        </ul>
-    </li>
+    <!-- Администрирование (только для админов) -->
+    @await Component.InvokeAsync("AdminMenu")
 </ul>
