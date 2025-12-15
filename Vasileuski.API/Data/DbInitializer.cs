@@ -12,7 +12,7 @@ namespace Vasileuski.API.Data
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
             // Выполнение миграций (уже делается в Program.cs, но можно и здесь)
-            await context.Database.MigrateAsync();
+            //await context.Database.MigrateAsync();
 
             // Проверяем, есть ли уже данные в базе
             if (await context.Categories.AnyAsync())
