@@ -1,0 +1,6 @@
+@Vasileuski.API_HostAddress = http://localhost:5026
+
+GET {{Vasileuski.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
