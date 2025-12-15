@@ -78,7 +78,7 @@
 //builder.Logging.AddConsole();
 //builder.Logging.AddDebug();
 
-//// Добавление сервисов в контейнер
+//// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
 //    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -98,21 +98,21 @@
 //})
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-//// Контроллеры с представлениями
+//// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //builder.Services.AddControllersWithViews();
 
-//// Razor Pages (для Identity и Admin area)
+//// Razor Pages (пїЅпїЅпїЅ Identity пїЅ Admin area)
 //builder.Services.AddRazorPages();
 
-//// Регистрация кастомных сервисов
+//// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //builder.Services.AddScoped<ICategoryService, MemoryCategoryService>();
 //builder.Services.AddScoped<ITeamService, MemoryTeamService>();
 
-//// IWebHostEnvironment для сервисов
+//// IWebHostEnvironment пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //builder.Services.AddSingleton<IWebHostEnvironment>(provider =>
 //    provider.GetRequiredService<IWebHostEnvironment>());
 
-//// Session и кэширование
+//// Session пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //builder.Services.AddDistributedMemoryCache();
 //builder.Services.AddSession(options =>
 //{
@@ -124,12 +124,12 @@
 
 //builder.Services.AddResponseCaching();
 
-//// Добавляем поддержку IHttpContextAccessor
+//// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ IHttpContextAccessor
 //builder.Services.AddHttpContextAccessor();
 
 //var app = builder.Build();
 
-//// Настройка конвейера HTTP запросов
+//// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ HTTP пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //if (app.Environment.IsDevelopment())
 //{
 //    app.UseDeveloperExceptionPage();
@@ -141,7 +141,7 @@
 //    app.UseHsts();
 //}
 
-//// Принудительно используем HTTP для тестирования
+//// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ HTTP пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 ////app.UseHttpsRedirection();
 
 //app.UseStaticFiles();
@@ -154,10 +154,10 @@
 //app.UseSession();
 //app.UseResponseCaching();
 
-//// Map Razor Pages для Identity
+//// Map Razor Pages пїЅпїЅпїЅ Identity
 //app.MapRazorPages();
 
-//// Map контроллеров
+//// Map пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //app.MapControllerRoute(
 //    name: "areas",
 //    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -197,7 +197,7 @@ using Vasileuski.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//База данных
+//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 var identityConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -206,7 +206,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Настройка контекста базы данных для приложения (AdminDbContext)
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (AdminDbContext)
 var adminConnectionString = builder.Configuration.GetConnectionString("AdminConnection")
     ?? throw new InvalidOperationException("Connection string 'AdminConnection' not found.");
 
@@ -215,7 +215,7 @@ builder.Services.AddDbContext<AdminDbContext>(options =>
 
 
 
-// Сервисы
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -230,27 +230,29 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
 
-    // Настройки пароля (опционально)
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
 
-    // Настройки пользователя
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     options.User.RequireUniqueEmail = true;
 
-    // Настройки блокировки
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
 })
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddRoles<IdentityRole>() // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-// Ваши сервисы
+// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //builder.Services.AddScoped<ICategoryService, MemoryCategoryService>();
 //builder.Services.AddScoped<ITeamService, MemoryTeamService>();
 builder.Services.AddScoped<ICategoryService, DbCategoryService>();
@@ -267,6 +269,36 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+
+try
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureCreated();
+
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ SeedData пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    await DbInit.SeedData(app);
+
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    await DbInit.SeedDefaultData(app.Services);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: {ex.Message}");
+}
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("AdminPolicy", policy =>
+//        policy.RequireClaim("role", "admin"));
+
+//    options.AddPolicy("AdminOrManager", policy =>
+//        policy.RequireAssertion(context =>
+//            context.User.HasClaim(c =>
+//                (c.Type == "role" && (c.Value == "admin" || c.Value == "manager")) ||
+//                (c.Type == "is_admin" && c.Value == "true")
+//            )));
+//});
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -286,10 +318,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
-// Map Razor Pages для Identity
+// Map Razor Pages пїЅпїЅпїЅ Identity
 app.MapRazorPages();
 
-// Map контроллеров
+// Map пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
