@@ -271,8 +271,12 @@ builder.Services.AddRazorPages();
 // ���� �������
 //builder.Services.AddScoped<ICategoryService, MemoryCategoryService>();
 //builder.Services.AddScoped<ITeamService, MemoryTeamService>();
-builder.Services.AddScoped<ICategoryService, DbCategoryService>();
-builder.Services.AddScoped<ITeamService, DbTeamService>();
+//builder.Services.AddScoped<ICategoryService, DbCategoryService>();
+//builder.Services.AddScoped<ITeamService, DbTeamService>();
+//Регистрация сервисов
+builder.Services.AddScoped<ITeamService, ApiTeamService>();
+builder.Services.AddScoped<ICategoryService, ApiCategoryService>();
+
 builder.Services.AddSingleton<IWebHostEnvironment>(builder.Environment);
 
 // Session
@@ -355,3 +359,56 @@ app.MapControllerRoute(
 
 
 app.Run();
+// Program.cs в Vasileuski.UI
+//using Vasileuski.UI.Services;
+
+//var builder = WebApplication.CreateBuilder(args);
+
+//// Add services to the container.
+//builder.Services.AddControllersWithViews();
+
+//// Регистрация HttpClient для API сервисов
+//builder.Services.AddHttpClient<ITeamService, ApiTeamService>(client =>
+//{
+//    client.BaseAddress = new Uri("https://localhost:7002/");
+//    client.DefaultRequestHeaders.Add("Accept", "application/json");
+//});
+
+//builder.Services.AddHttpClient<ICategoryService, ApiCategoryService>(client =>
+//{
+//    client.BaseAddress = new Uri("https://localhost:7002/");
+//    client.DefaultRequestHeaders.Add("Accept", "application/json");
+//});
+
+//// Для работы с сессиями (избранное)
+//builder.Services.AddSession(options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromMinutes(30);
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.IsEssential = true;
+//});
+
+//// Регистрация сервисов
+//builder.Services.AddScoped<ITeamService, ApiTeamService>();
+//builder.Services.AddScoped<ICategoryService, ApiCategoryService>();
+
+//var app = builder.Build();
+
+//// Configure the HTTP request pipeline.
+//if (!app.Environment.IsDevelopment())
+//{
+//    app.UseExceptionHandler("/Home/Error");
+//    app.UseHsts();
+//}
+
+//app.UseHttpsRedirection();
+//app.UseStaticFiles();
+//app.UseRouting();
+//app.UseAuthorization();
+//app.UseSession();
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+//app.Run();

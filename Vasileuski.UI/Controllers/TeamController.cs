@@ -11,50 +11,103 @@ namespace Vasileuski.UI.Controllers
         
             private readonly ITeamService _teamService;
             private readonly ICategoryService _categoryService;
-            
+        private readonly ILogger<TeamController> _logger;
+
         public TeamController(
             ITeamService teamService,
-            ICategoryService categoryService)
-             // Добавьте в конструктор
+            ICategoryService categoryService,
+            ILogger<TeamController> logger)
         {
             _teamService = teamService;
             _categoryService = categoryService;
-            
+            _logger = logger;
         }
 
+        //public async Task<IActionResult> Index(string? category)
+        //{
+        //    var teamResponse = await _teamService.GetTeamListAsync(category);
+
+        //    if (!teamResponse.Success)
+        //        return NotFound(teamResponse.ErrorMessage);
+
+        //    var teams = teamResponse.Data?.ToList() ?? new List<Team>();
+
+        //    // Получаем категории
+        //    var categoriesResponse = await _categoryService.GetCategoryListAsync();
+        //    if (categoriesResponse.Success)
+        //    {
+        //        ViewBag.Categories = categoriesResponse.Data;
+
+        //        if (!string.IsNullOrEmpty(category))
+        //        {
+        //            var currentCategory = categoriesResponse.Data?
+        //                .FirstOrDefault(c => c.NormalizedName == category);
+        //            ViewBag.CurrentCategory = currentCategory?.Name;
+        //        }
+        //    }
+
+        //    // Рассчитываем дополнительные статистики
+        //    if (teams.Any())
+        //    {
+        //        ViewBag.TotalPoints = teams.Sum(t => t.Points);
+        //        ViewBag.TotalWins = teams.Sum(t => t.Wins);
+        //        ViewBag.AveragePosition = teams.Average(t => t.Position);
+        //        ViewBag.LeaderTeam = teams.OrderBy(t => t.Position).First();
+        //    }
+
+        //    return View(teams);
+        //}
         public async Task<IActionResult> Index(string? category)
         {
-            var teamResponse = await _teamService.GetTeamListAsync(category);
-
-            if (!teamResponse.Success)
-                return NotFound(teamResponse.ErrorMessage);
-
-            var teams = teamResponse.Data?.ToList() ?? new List<Team>();
-
-            // Получаем категории
-            var categoriesResponse = await _categoryService.GetCategoryListAsync();
-            if (categoriesResponse.Success)
+            try
             {
-                ViewBag.Categories = categoriesResponse.Data;
+                _logger.LogInformation("Запрос списка команд с категорией: {Category}", category ?? "все");
 
-                if (!string.IsNullOrEmpty(category))
+                var teamResponse = await _teamService.GetTeamListAsync(category);
+
+                if (!teamResponse.Success)
                 {
-                    var currentCategory = categoriesResponse.Data?
-                        .FirstOrDefault(c => c.NormalizedName == category);
-                    ViewBag.CurrentCategory = currentCategory?.Name;
+                    _logger.LogWarning("Ошибка получения команд: {Error}", teamResponse.ErrorMessage);
+                    TempData["ErrorMessage"] = teamResponse.ErrorMessage;
+                    return View(new List<Team>());
                 }
-            }
 
-            // Рассчитываем дополнительные статистики
-            if (teams.Any())
+                var teams = teamResponse.Data?.ToList() ?? new List<Team>();
+                _logger.LogInformation("Получено {Count} команд", teams.Count);
+
+                // Получаем категории для фильтра
+                var categoriesResponse = await _categoryService.GetCategoryListAsync();
+                if (categoriesResponse.Success)
+                {
+                    ViewBag.Categories = categoriesResponse.Data;
+
+                    if (!string.IsNullOrEmpty(category))
+                    {
+                        var currentCategory = categoriesResponse.Data?
+                            .FirstOrDefault(c => c.NormalizedName != null &&
+                                c.NormalizedName.Equals(category, StringComparison.OrdinalIgnoreCase));
+
+                        ViewBag.CurrentCategory = currentCategory?.Name;
+                    }
+                }
+
+                // Рассчитываем статистики
+                if (teams.Any())
+                {
+                    ViewBag.TotalPoints = teams.Sum(t => t.Points);
+                    ViewBag.TotalWins = teams.Sum(t => t.Wins);
+                    ViewBag.AveragePosition = teams.Average(t => t.Position);
+                    ViewBag.LeaderTeam = teams.OrderBy(t => t.Position).First();
+                }
+
+                return View(teams);
+            }
+            catch (Exception ex)
             {
-                ViewBag.TotalPoints = teams.Sum(t => t.Points);
-                ViewBag.TotalWins = teams.Sum(t => t.Wins);
-                ViewBag.AveragePosition = teams.Average(t => t.Position);
-                ViewBag.LeaderTeam = teams.OrderBy(t => t.Position).First();
+                _logger.LogError(ex, "Ошибка в методе Index");
+                TempData["ErrorMessage"] = "Ошибка загрузки данных";
+                return View(new List<Team>());
             }
-
-            return View(teams);
         }
         //public async Task<IActionResult> Index(string? category)
         //{
