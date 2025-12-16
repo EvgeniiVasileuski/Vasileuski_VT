@@ -1,15 +1,15 @@
-﻿{
+{
   "profiles": {
     "Vasileuski.API": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "api-docs", // Автоматически открывать Swagger
-      "applicationUrl": "http://localhost:5002;https://localhost:7002",
+      "launchUrl": "api-docs",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://localhost:5002;https://localhost:7002"
-      }
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5002;https://localhost:7002"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -27,5 +27,13 @@
       "useSSL": true
     }
   },
-  "$schema": "https://json.schemastore.org/launchsettings.json"
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:63406/",
+      "sslPort": 44336
+    }
+  }
 }

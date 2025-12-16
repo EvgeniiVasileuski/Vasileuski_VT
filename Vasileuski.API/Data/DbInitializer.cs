@@ -29,7 +29,7 @@ namespace Vasileuski.API.Data
                 new Category
                 {
                     Name = "Футбол",
-                    NormalizedName = StringHelper.ToKebabCase("Футбол"),
+                    NormalizedName = "football",
                     Description = "Футбольные лиги и турниры",
                     Image = "/images/categories/football.png",
                     CreatedAt = DateTime.UtcNow.AddDays(-30)
@@ -37,7 +37,7 @@ namespace Vasileuski.API.Data
                 new Category
                 {
                     Name = "Баскетбол",
-                    NormalizedName = StringHelper.ToKebabCase("Баскетбол"),
+                    NormalizedName = "basketball",
                     Description = "Баскетбольные лиги и турниры",
                     Image = "/images/categories/basketball.png",
                     CreatedAt = DateTime.UtcNow.AddDays(-25)
@@ -45,7 +45,7 @@ namespace Vasileuski.API.Data
                 new Category
                 {
                     Name = "Хоккей",
-                    NormalizedName = StringHelper.ToKebabCase("Хоккей"),
+                    NormalizedName = "hockey",
                     Description = "Хоккейные лиги и турниры",
                     Image = "/images/categories/hockey.png",
                     CreatedAt = DateTime.UtcNow.AddDays(-20)
@@ -53,7 +53,7 @@ namespace Vasileuski.API.Data
                 new Category
                 {
                     Name = "Теннис",
-                    NormalizedName = StringHelper.ToKebabCase("Теннис"),
+                    NormalizedName = "tennis",
                     Description = "Теннисные турниры и ассоциации",
                     Image = "/images/categories/tennis.png",
                     CreatedAt = DateTime.UtcNow.AddDays(-15)
@@ -61,7 +61,7 @@ namespace Vasileuski.API.Data
                 new Category
                 {
                     Name = "Волейбол",
-                    NormalizedName = StringHelper.ToKebabCase("Волейбол"),
+                    NormalizedName = "volleyball",
                     Description = "Волейбольные лиги и турниры",
                     Image = "/images/categories/volleyball.png",
                     CreatedAt = DateTime.UtcNow.AddDays(-10)

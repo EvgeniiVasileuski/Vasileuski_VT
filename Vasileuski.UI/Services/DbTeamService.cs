@@ -15,7 +15,6 @@ namespace Vasileuski.UI.Services
             _context = context;
             _environment = environment;
         }
-
         public async Task<ResponseData<List<Team>>> GetTeamListAsync(string? category)
         {
             try
@@ -24,21 +23,64 @@ namespace Vasileuski.UI.Services
 
                 if (!string.IsNullOrEmpty(category))
                 {
-                    query = query.Where(t => t.Category != null && t.Category.NormalizedName == category);
+                    // Нормализуем входной параметр
+                    var normalizedInput = category.Trim().ToLower();
+
+                    Console.WriteLine($"Фильтрация: '{category}' -> '{normalizedInput}'");
+
+                    query = query.Where(t => t.Category != null &&
+                        t.Category.NormalizedName.Trim().ToLower() == normalizedInput);
                 }
 
                 var teams = await query
                     .OrderByDescending(t => t.Points)
-                    .ThenByDescending(t => t.GoalsFor - t.GoalsAgainst) // Заменяем GoalDifference на вычисление
+                    .ThenByDescending(t => t.GoalsFor - t.GoalsAgainst)
                     .ToListAsync();
 
                 return ResponseData<List<Team>>.Ok(teams);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Ошибка в GetTeamListAsync: {ex.Message}");
                 return ResponseData<List<Team>>.Error($"Ошибка при получении команд: {ex.Message}");
             }
         }
+        //public async Task<ResponseData<List<Team>>> GetTeamListAsync(string? category)
+        //{
+        //    try
+        //    {
+        //        IQueryable<Team> query = _context.Teams.Include(t => t.Category);
+
+        //        if (!string.IsNullOrEmpty(category))
+        //        {
+        //            // Добавляем логирование
+        //            Console.WriteLine($"Фильтрация по категории: '{category}'");
+
+        //            // Сравнение с игнорированием регистра
+        //            query = query.Where(t => t.Category != null &&
+        //                t.Category.NormalizedName.ToLower() == category.ToLower());
+        //        }
+
+        //        var teams = await query
+        //            .OrderByDescending(t => t.Points)
+        //            .ThenByDescending(t => t.GoalsFor - t.GoalsAgainst)
+        //            .ToListAsync();
+
+        //        // Логируем результат
+        //        Console.WriteLine($"Найдено команд: {teams.Count}");
+        //        foreach (var team in teams)
+        //        {
+        //            Console.WriteLine($"- {team.Name}, Категория: {team.Category?.Name}");
+        //        }
+
+        //        return ResponseData<List<Team>>.Ok(teams);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Ошибка: {ex.Message}");
+        //        return ResponseData<List<Team>>.Error($"Ошибка при получении команд: {ex.Message}");
+        //    }
+        //}
 
         public async Task<ResponseData<Team>> GetTeamByIdAsync(int id)
         {

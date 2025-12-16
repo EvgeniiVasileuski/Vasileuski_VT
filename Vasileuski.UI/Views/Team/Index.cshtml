@@ -56,7 +56,7 @@
                         <div class="btn-group flex-wrap" role="group">
                             @{
                                 var categories = ViewBag.Categories as IEnumerable<Category>;
-                                var currentCategory = ViewBag.CurrentCategory as string;
+                                var currentCategory = ViewBag.CurrentCategoryNormalizedName as string;
                             }
 
                             <a asp-action="Index"
