@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
         policy => policy
             .WithOrigins(
                 "http://localhost:5001",  // UI HTTP порт
-                "https://localhost:7001",// UI HTTPS порт
+                "https://localhost:7001", // UI HTTPS порт
                 "http://localhost:5000",  // UI HTTP альтернативный порт
                 "https://localhost:7000"  // UI HTTPS альтернативный порт
             )
