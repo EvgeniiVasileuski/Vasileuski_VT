@@ -1,0 +1,173 @@
+﻿@using Vasileuski.Blazor.Models
+@rendermode InteractiveServer
+
+@if (Team != null)
+{
+    <div class="card shadow-lg mt-4">
+        <div class="row g-0">
+            @if (!string.IsNullOrEmpty(Team.Image))
+            {
+                <div class="col-md-4 p-3">
+                    <img src="@Team.Image" class="img-fluid rounded-start"
+                         alt="@Team.Name" style="max-height: 300px; object-fit: contain;">
+                </div>
+            }
+            <div class="@(!string.IsNullOrEmpty(Team.Image) ? "col-md-8" : "col-12")">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h2 class="card-title text-primary mb-1">@Team.Name</h2>
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-geo-alt"></i> @Team.Location
+                                @if (Team.FoundedYear.HasValue)
+                                {
+                                    <span class="ms-3">
+                                        <i class="bi bi-calendar"></i> Основана в @Team.FoundedYear году
+                                    </span>
+                                }
+                            </p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-success fs-6">@Team.Points очков</span>
+                            <div class="mt-1">
+                                <span class="badge bg-info">Позиция: @Team.Position</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Team.Description))
+                    {
+                        <div class="card-text mt-3">
+                            <h5>Описание:</h5>
+                            <p>@Team.Description</p>
+                        </div>
+                    }
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5><i class="bi bi-graph-up"></i> Статистика</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Победы</span>
+                                        <span class="stat-value text-success">@Team.Wins</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Поражения</span>
+                                        <span class="stat-value text-danger">@Team.Losses</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Ничьи</span>
+                                        <span class="stat-value text-warning">@Team.Draws</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Всего игр</span>
+                                        <span class="stat-value">@Team.TotalGames</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <h6>Голы:</h6>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-success me-2">Забито: @Team.GoalsFor</span>
+                                    <span class="badge bg-danger me-2">Пропущено: @Team.GoalsAgainst</span>
+                                    <span class="badge bg-primary">Разница: @Team.GoalDifference</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5><i class="bi bi-info-circle"></i> Информация о команде</h5>
+                            <ul class="list-unstyled">
+                                @if (!string.IsNullOrEmpty(Team.HeadCoach))
+                                {
+                                    <li class="mb-2">
+                                        <strong><i class="bi bi-person-badge"></i> Главный тренер:</strong>
+                                        <span class="ms-2">@Team.HeadCoach</span>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(Team.Captain))
+                                {
+                                    <li class="mb-2">
+                                        <strong><i class="bi bi-person-fill-check"></i> Капитан:</strong>
+                                        <span class="ms-2">@Team.Captain</span>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(Team.Stadium))
+                                {
+                                    <li class="mb-2">
+                                        <strong><i class="bi bi-building"></i> Стадион:</strong>
+                                        <span class="ms-2">@Team.Stadium</span>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(Team.Colors))
+                                {
+                                    <li class="mb-2">
+                                        <strong><i class="bi bi-palette"></i> Цвета:</strong>
+                                        <span class="ms-2">@Team.Colors</span>
+                                    </li>
+                                }
+                                <li class="mb-2">
+                                    <strong><i class="bi bi-trophy"></i> Процент побед:</strong>
+                                    <span class="ms-2">@Team.WinPercentage.ToString("F1")%</span>
+                                </li>
+                            </ul>
+
+                            @if (Team.Category != null)
+                            {
+                                <div class="mt-3">
+                                    <span class="badge bg-secondary">@Team.Category.Name</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i> Обновлено: @Team.UpdatedAt.ToString("dd.MM.yyyy HH:mm")
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info mt-4">
+        <i class="bi bi-info-circle"></i> Выберите команду из списка для просмотра детальной информации
+    </div>
+}
+
+<style>
+    .stat-item {
+        padding: 8px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        display: block;
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .stat-value {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public TeamDTO? Team { get; set; }  // Изменено с Team на TeamDTO
+}

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vasileuski.Domain", "Vasile
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vasileuski.API", "Vasileuski.API\Vasileuski.API.csproj", "{87FB9B22-D032-4194-BA17-D02F4CBDBB65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vasileuski.Blazor", "Vasileuski.Blazor\Vasileuski.Blazor.csproj", "{888F6409-B559-4A2F-9C81-47EEB40C214E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{87FB9B22-D032-4194-BA17-D02F4CBDBB65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87FB9B22-D032-4194-BA17-D02F4CBDBB65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87FB9B22-D032-4194-BA17-D02F4CBDBB65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{888F6409-B559-4A2F-9C81-47EEB40C214E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{888F6409-B559-4A2F-9C81-47EEB40C214E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{888F6409-B559-4A2F-9C81-47EEB40C214E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{888F6409-B559-4A2F-9C81-47EEB40C214E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

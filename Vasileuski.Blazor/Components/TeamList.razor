@@ -1,0 +1,72 @@
+﻿@implements IDisposable
+@rendermode InteractiveServer
+@using Vasileuski.Blazor.Services
+<h3>🏆 Список спортивных команд</h3>
+
+@if (TeamService.Teams != null && TeamService.Teams.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Название</th>
+                <th>Локация</th>
+                <th>Очки</th>
+                <th>Позиция</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in TeamService.Teams)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(team.Image))
+                        {
+                            <img src="@team.Image" alt="@team.Name"
+                                 style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                        }
+                        @team.Name
+                    </td>
+                    <td>@team.Location</td>
+                    <td><span class="badge bg-primary">@team.Points</span></td>
+                    <td><span class="badge bg-secondary">@team.Position</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-info"
+                                @onclick="@(() => OnTeamSelected(team.Id))">
+                            📋 Подробно
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i> Нет данных о командах
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    public ITeamService TeamService { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<int> TeamSelected { get; set; }
+
+    protected override void OnInitialized()
+    {
+        TeamService.ListChanged += StateHasChanged;
+    }
+
+    private async Task OnTeamSelected(int id)
+    {
+        await TeamSelected.InvokeAsync(id);
+    }
+
+    public void Dispose()
+    {
+        TeamService.ListChanged -= StateHasChanged;
+    }
+}

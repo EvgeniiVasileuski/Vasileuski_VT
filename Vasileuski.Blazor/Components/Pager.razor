@@ -1,0 +1,62 @@
+﻿@implements IDisposable
+@rendermode InteractiveServer
+@using Vasileuski.Blazor.Services
+@if (TeamService.TotalPages > 1)
+{
+    <nav aria-label="Навигация по страницам" class="mt-3">
+        <ul class="pagination justify-content-center">
+            <!-- Кнопка "Назад" -->
+            <li class="page-item @(TeamService.CurrentPage == 1 ? "disabled" : "")">
+                <button class="page-link"
+                        @onclick="@(() => OnPageSelected(TeamService.CurrentPage - 1))"
+                        disabled="@(TeamService.CurrentPage == 1)">
+                    &laquo;
+                </button>
+            </li>
+
+            <!-- Номера страниц -->
+            @for (int i = 1; i <= TeamService.TotalPages; i++)
+            {
+                var pageNumber = i;
+                <li class="page-item @(TeamService.CurrentPage == i ? "active" : "")">
+                    <button class="page-link"
+                            @onclick="@(() => OnPageSelected(pageNumber))">
+                        @i
+                    </button>
+                </li>
+            }
+
+            <!-- Кнопка "Вперед" -->
+            <li class="page-item @(TeamService.CurrentPage == TeamService.TotalPages ? "disabled" : "")">
+                <button class="page-link"
+                        @onclick="@(() => OnPageSelected(TeamService.CurrentPage + 1))"
+                        disabled="@(TeamService.CurrentPage == TeamService.TotalPages)">
+                    &raquo;
+                </button>
+            </li>
+        </ul>
+        <div class="text-center text-muted small">
+            Страница @TeamService.CurrentPage из @TeamService.TotalPages
+        </div>
+    </nav>
+}
+
+@code {
+    [CascadingParameter]
+    public ITeamService TeamService { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        TeamService.ListChanged += StateHasChanged;
+    }
+
+    async Task OnPageSelected(int pageNo)
+    {
+        await TeamService.GetTeams(pageNo);
+    }
+
+    public void Dispose()
+    {
+        TeamService.ListChanged -= StateHasChanged;
+    }
+}
