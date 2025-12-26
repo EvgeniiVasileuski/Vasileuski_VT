@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Vasileuski.API.Data;
 using Vasileuski.API.Services;
-
+using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Добавление сервисов в контейнер
@@ -15,6 +15,8 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API for managing sports teams and categories"
     });
+    c.AddServer(new OpenApiServer { Url = "https://localhost:7002" });
+    c.AddServer(new OpenApiServer { Url = "http://localhost:5002" });
 });
 
 // Настройка базы данных с вашим SQL Server Express
